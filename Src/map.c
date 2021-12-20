@@ -13,6 +13,8 @@ const int map_offset_x = 25, map_offset_y = 50;			// pixel offset of where to st
 const int four_probe[4][2] = {{ 1, 0 }, { 0, 1 }, { -1,0 }, { 0, -1 }};
 ALLEGRO_BITMAP* all;
 /* Declare static function prototypes. */
+void draw_cherry(Map*, const int, const int);
+void draw_strawberry(Map*, const int, const int);
 static void draw_block_index(Map* M, int row, int col);
 static void draw_bean(Map* M, const int row, const int col);
 static void draw_power_bean(Map* M, const int row, const int col);

@@ -312,12 +312,12 @@ static void game_vlog(const char* format, va_list arg) {
 	vprintf(format, arg);
 	printf("\n");
 	// Write log to file for later debugging.
-	FILE* pFile = fopen("log.txt", clear_file ? "w" : "a");
-	if (pFile) {
-		vfprintf(pFile, format, arg);
-		fprintf(pFile, "\n");
-		fclose(pFile);
-	}
+	// FILE* pFile = fopen("log.txt", clear_file ? "w" : "a");
+	// if (pFile) {
+	// 	vfprintf(pFile, format, arg);
+	// 	fprintf(pFile, "\n");
+	// 	fclose(pFile);
+	// }
 	clear_file = false;
 #endif
 }

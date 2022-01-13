@@ -6,7 +6,7 @@
 #include "ghost.h"
 #include "pacman_obj.h"
 #include "map.h"
-
+#include "game.h"
 /* global variables*/
 // [ NOTE ]
 // if you change the map .txt to your own design.
@@ -16,7 +16,7 @@
 const int cage_grid_x=22, cage_grid_y=11;
 /* shared variables. */
 extern uint32_t GAME_TICK;
-extern uint32_t GAME_TICK_CD;
+//extern uint32_t GAME_TICK_CD;
 extern ALLEGRO_TIMER* power_up_timer;
 extern const int block_width,  block_height;
 /* Internal variables */

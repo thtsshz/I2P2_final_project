@@ -94,7 +94,7 @@ static void on_mouse_move(int a, int mouse_x, int mouse_y, int f) {
 //	[HACKATHON 3-8]
 //	TODO: When btnSettings clicked, switch to settings scene
 //	Uncomment and fill the code below
-static void on_mouse_down() {
+static void on_mouse_down(int,int,int,int) {
 	if (btnSettings.hovered)
 		game_change_scene(scene_settings_create());
 }

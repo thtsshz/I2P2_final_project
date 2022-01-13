@@ -59,7 +59,7 @@ extern const int SCREEN_H;
 // At most 4 audios can be played at a time.
 extern const int RESERVE_SAMPLES;
 
-
+const uint32_t GAME_TICK_CD=64;
 /* Input states */
 
 // The active scene. Events will be triggered through function pointers.

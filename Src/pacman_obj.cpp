@@ -1,7 +1,9 @@
 #include <allegro5/allegro_primitives.h>
 #include "pacman_obj.h"
 #include "map.h"
+#include "game.h" 
 #include "shared.h"
+ 
 /* Static variables */
 static const int start_grid_x = 25, start_grid_y = 25;		// where to put pacman at the beginning
 static const int fix_draw_pixel_offset_x = -3, fix_draw_pixel_offset_y = -3;  // draw offset 
@@ -20,7 +22,7 @@ static const int basic_speed = 2;
 extern ALLEGRO_SAMPLE* PACMAN_MOVESOUND;
 extern ALLEGRO_SAMPLE* PACMAN_DEATH_SOUND;
 extern uint32_t GAME_TICK;
-extern uint32_t GAME_TICK_CD;
+//extern uint32_t GAME_TICK_CD;
 extern bool game_over;
 extern bool check_color;
 extern float effect_volume;

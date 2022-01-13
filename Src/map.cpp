@@ -249,7 +249,7 @@ void draw_map(Map const* M) {
 		}
 	*/
 }
-void draw_cherry(Map* M, const int row, const int col){
+void draw_cherry(Map const* M, const int row, const int col){
 	al_draw_scaled_bitmap(
 		all,
 		32, 48,
@@ -258,7 +258,7 @@ void draw_cherry(Map* M, const int row, const int col){
 		20, 20, 0
 	);
 }
-void draw_strawberry(Map* M, const int row, const int col){
+void draw_strawberry(Map const* M, const int row, const int col){
 	al_draw_scaled_bitmap(
 		all,
 		48, 48,
@@ -338,14 +338,14 @@ bool is_wall_block(Map const* M, int index_x, int index_y) {
 		return true;
 	return M->map[index_y][index_x] == '#';
 }
-bool is_room_block(Map* M, int index_x, int index_y) {
+bool is_room_block(Map const* M, int index_x, int index_y) {
 	if (index_x < 0 || index_x >= M->col_num || index_y < 0 || index_y >= M->row_num)
 		return true;
 	return M->map[index_y][index_x] == 'B';
 }
 
 
-Directions shortest_path_direc(Map* M, int startGridx, int startGridy, int endGridx, int endGridy) {
+Directions shortest_path_direc(Map * M, int startGridx, int startGridy, int endGridx, int endGridy) {
 	// [NOTODO]
 	// Here is a complete function return the next direction of the shorstest path.
 	// Given Map, start point and end point.

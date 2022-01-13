@@ -8,12 +8,12 @@
 #include <allegro5/allegro_image.h>
 #include <allegro5/allegro_font.h>
 #include <allegro5/allegro_audio.h>
-extern uint32_t GAME_TICK, GAME_TICK_CD;
+extern uint32_t GAME_TICK;//, GAME_TICK_CD;
 const int GridSize = 22;
 float VOLUME = 1.0;
-extern map_offset_x;
-extern map_offset_y;
-extern block_width, block_height;
+extern const int map_offset_x;
+extern const int map_offset_y;
+extern const int block_width, block_height;
 ALLEGRO_SAMPLE* load_audio(const char* filename) {
 	ALLEGRO_SAMPLE* sample = al_load_sample(filename);
 //	if (!sample)
@@ -122,19 +122,19 @@ RecArea getDrawArea(object obj, uint32_t TOTAL_TICK) {
 	target.h = block_height;
 
 	switch (obj.preMove) {
-		case UP:
+		case Directions::UP:
 			target.y += (obj.moveCD) * block_width / TOTAL_TICK;
 		break;
-		case DOWN:
+		case Directions::DOWN:
 			target.y -= (obj.moveCD) * block_width / TOTAL_TICK;
 		break;
-		case LEFT:
+		case Directions::LEFT:
 			target.x += (obj.moveCD) * block_width / TOTAL_TICK;
 		break;
-		case RIGHT:
+		case Directions::RIGHT:
 			target.x -= (obj.moveCD) * block_width / TOTAL_TICK;
 		break;
-		case NONE:
+		case Directions::NONE:
 			break;
 		default:
 			break;
@@ -151,19 +151,19 @@ void printDirection(const Directions a) {
 	// NOTODO
 	switch (a)
 	{
-	case NONE:
+	case Directions::NONE:
 		game_log("NONE");
 		break;
-	case UP:
+	case Directions::UP:
 		game_log("UP");
 		break;
-	case DOWN:
+	case Directions::DOWN:
 		game_log("DOWN");
 		break;
-	case LEFT:
+	case Directions::LEFT:
 		game_log("LEFT");
 		break;
-	case RIGHT:
+	case Directions::RIGHT:
 		game_log("RIGHT");
 		break;
 	default:

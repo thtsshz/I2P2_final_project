@@ -2,9 +2,10 @@
 #include "ghost.h"
 #include "pacman_obj.h"
 #include "map.h"
+#include "game.h" 
 /* Shared variables */
 #define GO_OUT_TIME 256
-extern uint32_t GAME_TICK_CD;
+//extern uint32_t GAME_TICK_CD;
 extern uint32_t GAME_TICK;
 extern ALLEGRO_TIMER* game_tick_timer;
 extern const int cage_grid_x, cage_grid_y;//22 11

@@ -19,7 +19,7 @@
 // Just modify the GHOST_NUM to 1
 #define GHOST_NUM 4
 /* global variables*/
-extern const uint32_t GAME_TICK_CD;
+//extern const uint32_t GAME_TICK_CD;
 extern uint32_t GAME_TICK;
 extern int score[50];
 extern ALLEGRO_TIMER* power_up_timer;
@@ -33,7 +33,7 @@ static const int power_up_duration = 10;
 static Pacman* pman;
 static Map* basic_map;
 static Ghost** ghosts;
-ALLEGRO_FONT* font;
+extern ALLEGRO_FONT* font;
 bool debug_mode = false;
 bool cheat_mode = false;
 bool check_P=0;

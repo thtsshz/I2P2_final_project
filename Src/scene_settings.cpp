@@ -23,7 +23,7 @@ ALLEGRO_SAMPLE_ID menuBGM;
 
 // TODO: More variables and functions that will only be accessed
 // inside this scene. They should all have the 'static' prefix.
-ALLEGRO_FONT* font;
+extern ALLEGRO_FONT* font;
 ALLEGRO_FONT* small_font;
 static void draw(){
 	al_clear_to_color(al_map_rgb(35, 187, 214));

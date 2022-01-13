@@ -42,9 +42,9 @@ Ghost* ghost_create(int flag) {
 	ghost->objData.Size.x = block_width;
 	ghost->objData.Size.y = block_height;
 
-	ghost->objData.nextTryMove = NONE;
+	ghost->objData.nextTryMove = (int)Directions::NONE;
 	ghost->speed = basic_speed;
-	ghost->status = BLOCKED;
+	ghost->status = GhostStatus::BLOCKED;
 	
 	ghost->flee_sprite = load_bitmap("Assets/ghost_flee.png");
 	ghost->dead_sprite = load_bitmap("Assets/ghost_dead.png");
@@ -52,19 +52,19 @@ Ghost* ghost_create(int flag) {
 	ghost->previous_timer_val=0;
 	
 	switch (ghost->typeFlag) {
-	case Blinky:
+	case (int)GhostType::Blinky:
 		ghost->objData.Coord.x = cage_grid_x;
 		ghost->objData.Coord.y = cage_grid_y;
 		ghost->move_sprite = load_bitmap("Assets/ghost_move_red.png");
 		ghost->move_script = &ghost_red_move_script;
 		break;
-	case Pinky:
+	case (int)GhostType::Pinky:
 		ghost->objData.Coord.x = cage_grid_x;
 		ghost->objData.Coord.y = cage_grid_y;
 		ghost->move_sprite = load_bitmap("Assets/ghost_move_pink.png");
 		ghost->move_script = &ghost_red_move_script;
 		break;
-	case Inky:
+	case (int)GhostType::Inky:
 		ghost->objData.Coord.x = cage_grid_x;
 		ghost->objData.Coord.y = cage_grid_y;
 		ghost->move_sprite = load_bitmap("Assets/ghost_move_blue.png");
@@ -96,7 +96,7 @@ void ghost_draw(Ghost* ghost) {
 	if(check==65)
 		check=0;
 	// [TODO] below is for animation usage, change the sprite you want to use.
-	if (ghost->status == FLEE){
+	if (ghost->status == GhostStatus::FLEE){
 		if(al_get_timer_count(power_up_timer)>7){
 			if(check>32){
 				if(v>16){
@@ -157,9 +157,9 @@ void ghost_draw(Ghost* ghost) {
 			al_draw_scaled_bitmap(...)
 		*/
 	}
-	else if (ghost->status == GO_IN) {
+	else if (ghost->status == GhostStatus::GO_IN) {
 		switch (ghost->objData.facing){
-			case RIGHT:
+			case (int)Directions::RIGHT:
 				al_draw_scaled_bitmap(ghost->dead_sprite,0,0,
 					16, 16,
 					drawArea.x + fix_draw_pixel_offset_x, drawArea.y + fix_draw_pixel_offset_y,
@@ -167,7 +167,7 @@ void ghost_draw(Ghost* ghost) {
 					//30
 				);
 				break;
-			case LEFT:
+			case (int)Directions::LEFT:
 				al_draw_scaled_bitmap(ghost->dead_sprite,16,0,
 					16, 16,
 					drawArea.x + fix_draw_pixel_offset_x, drawArea.y + fix_draw_pixel_offset_y,
@@ -175,7 +175,7 @@ void ghost_draw(Ghost* ghost) {
 					//30
 				);
 				break;
-			case UP:
+			case (int)Directions::UP:
 				al_draw_scaled_bitmap(ghost->dead_sprite,32,0,
 					16, 16,
 					drawArea.x + fix_draw_pixel_offset_x, drawArea.y + fix_draw_pixel_offset_y,
@@ -195,7 +195,7 @@ void ghost_draw(Ghost* ghost) {
 	}
 	else {
 		switch (ghost->objData.facing){ 
-			case RIGHT:
+			case (int)Directions::RIGHT:
 				if(v>16){
 					al_draw_scaled_bitmap(ghost->move_sprite,0,0,
 						16, 16,
@@ -213,7 +213,7 @@ void ghost_draw(Ghost* ghost) {
 					);
 				}
 				break;
-			case LEFT:
+			case (int)Directions::LEFT:
 				if(v>16){
 					al_draw_scaled_bitmap(ghost->move_sprite,32,0,
 						16, 16,
@@ -231,7 +231,7 @@ void ghost_draw(Ghost* ghost) {
 					);
 				}
 				break;
-			case UP:
+			case (int)Directions::UP:
 				if(v>16){
 					al_draw_scaled_bitmap(ghost->move_sprite,64,0,
 						16, 16,
@@ -271,25 +271,25 @@ void ghost_draw(Ghost* ghost) {
 	}
 
 }
-void ghost_NextMove(Ghost* ghost, Directions next) {
+void ghost_NextMove(Ghost* ghost, int next) {
 	ghost->objData.nextTryMove = next;
 }
 void printGhostStatus(GhostStatus S) {
 
 	switch(S){
-	case BLOCKED: // stay inside the ghost room
+	case GhostStatus::BLOCKED: // stay inside the ghost room
 		game_log("BLOCKED");
 		break;
-	case GO_OUT: // going out the ghost room
+	case GhostStatus::GO_OUT: // going out the ghost room
 		game_log("GO_OUT");
 		break;
-	case FREEDOM: // free at the map
+	case GhostStatus::FREEDOM: // free at the map
 		game_log("FREEDOM");
 		break;
-	case GO_IN:
+	case GhostStatus::GO_IN:
 		game_log("GO_IN");
 		break;
-	case FLEE:
+	case GhostStatus::FLEE:
 		game_log("FLEE");
 		break;
 	default:
@@ -297,7 +297,7 @@ void printGhostStatus(GhostStatus S) {
 		break;
 	}
 }
-bool ghost_movable(Ghost* ghost, Map* M, Directions targetDirec, bool room) {
+bool ghost_movable(Ghost* ghost, Map* M, int targetDirec, bool room) {
 	// [HACKATHON 2-3]
 	// TODO: Determine if the current direction is movable.
 	// Basically, this is a ghost version of `pacman_movable`.
@@ -307,16 +307,16 @@ bool ghost_movable(Ghost* ghost, Map* M, Directions targetDirec, bool room) {
 	int x=ghost->objData.Coord.x,y=ghost->objData.Coord.y;
 	switch (targetDirec)
 	{
-	case UP:
+	case (int)Directions::UP:
 		y--;
 		break;
-	case DOWN:
+	case (int)Directions::DOWN:
 		y++;
 		break;
-	case LEFT:
+	case (int)Directions::LEFT:
 		x--;
 		break;
-	case RIGHT:
+	case (int)Directions::RIGHT:
 		x++;
 		break;
 	default:
@@ -339,21 +339,21 @@ void ghost_toggle_FLEE(Ghost* ghost, bool setFLEE) {
 	// This implementation is based on the classic PACMAN game.
 	// You are allowed to do your own implementation of power bean system.
 	if(setFLEE){
-		if(ghost->status == FREEDOM){ 
-			ghost->status = FLEE;
+		if(ghost->status == GhostStatus::FREEDOM){ 
+			ghost->status = GhostStatus::FLEE;
 			ghost->speed = 1;
 		}
 	}else{
-		if(ghost->status == FLEE){
-			ghost->status = GO_IN;
+		if(ghost->status == GhostStatus::FLEE){
+			ghost->status = GhostStatus::GO_IN;
 			ghost->speed=4;
 		}
 	}
 }
 
 void ghost_collided(Ghost* ghost) {
-	if (ghost->status == FLEE) {
-		ghost->status = GO_IN;
+	if (ghost->status == GhostStatus::FLEE) {
+		ghost->status = GhostStatus::GO_IN;
 		ghost->speed = 4;
 	}
 }
@@ -363,7 +363,7 @@ void ghost_move_script_GO_IN(Ghost* ghost, Map* M) {
 	// `shortest_path_direc` is a function that returns the direction of shortest path.
 	// Check `map.c` for its detail usage.
 	// For GO_IN state.
-	ghost->objData.nextTryMove = shortest_path_direc(M, ghost->objData.Coord.x, ghost->objData.Coord.y, cage_grid_x, cage_grid_y+1);
+	ghost->objData.nextTryMove = (int)shortest_path_direc(M, ghost->objData.Coord.x, ghost->objData.Coord.y, cage_grid_x, cage_grid_y+1);
 }
 void ghost_move_script_GO_OUT(Ghost* ghost, Map* M) {
 	// Description
@@ -371,18 +371,18 @@ void ghost_move_script_GO_OUT(Ghost* ghost, Map* M) {
 	// And used a greedy method to drag ghosts out of room.
 	// You should modify here if you have different implementation/design of room.
 	if(M->map[ghost->objData.Coord.y][ghost->objData.Coord.x] == 'B') 
-		ghost_NextMove(ghost, UP);
+		ghost_NextMove(ghost, Directions::UP);
 	else
-		ghost->status = FREEDOM;
+		ghost->status = GhostStatus::FREEDOM;
 }
 int inv2(int dir){
-	if(dir==UP)
-		return DOWN;
-	if(dir==DOWN)
-		return UP;
-	if(dir==LEFT)
-		return RIGHT;
-	return LEFT;
+	if(dir==(int)Directions::UP)
+		return (int)Directions::DOWN;
+	if(dir==(int)Directions::DOWN)
+		return (int)Directions::UP;
+	if(dir==(int)Directions::LEFT)
+		return (int)Directions::RIGHT;
+	return (int)Directions::LEFT;
 } 
 void ghost_move_script_FLEE(Ghost* ghost, Map* M, const Pacman * const pacman) {
 	// [TODO]
@@ -392,10 +392,10 @@ void ghost_move_script_FLEE(Ghost* ghost, Map* M, const Pacman * const pacman) {
 	// To achieve this, think in this way. We first get the direction to shortest path to pacman, call it K (K is either UP, DOWN, RIGHT or LEFT).
 	// Then we choose other available direction rather than direction K.
 	// In this way, ghost will escape from pacman.
-	static Directions proba[4]; // possible movement
+	static int proba[4]; // possible movement
 	int i,cnt = 0;
-	for (Directions i = 1; i <= 4; i++)
-		if (ghost_movable(ghost,M,i,1)&&i!=shortestDirection&&inv2(i)!=ghost->objData.preMove)//
+	for (i = 1; i <= 4; i++)
+		if (ghost_movable(ghost,M,i,1)&&i!=(int)shortestDirection&&inv2(i)!=ghost->objData.preMove)//
 		 	proba[cnt++] = i;
 	if(cnt){
 		ghost_NextMove(ghost,proba[rand()%cnt]);

@@ -16,10 +16,10 @@ extern map_offset_y;
 extern block_width, block_height;
 ALLEGRO_SAMPLE* load_audio(const char* filename) {
 	ALLEGRO_SAMPLE* sample = al_load_sample(filename);
-	if (!sample)
-		game_abort("failed to load audio: %s", filename);
-	else
-		game_log("loaded audio: %s", filename);
+//	if (!sample)
+//		game_abort("failed to load audio: %s", filename);
+//	else
+//		game_log("loaded audio: %s", filename);
 	return sample;
 }
 

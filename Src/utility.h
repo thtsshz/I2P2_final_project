@@ -35,7 +35,7 @@ typedef struct Pair_IntInt {
 	int x;
 	int y;
 } Pair_IntInt;
-typedef enum Directions{
+typedef enum class Directions{
 	NONE = 0,
 	UP = 1,
 	LEFT = 2,

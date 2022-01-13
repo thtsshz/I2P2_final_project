@@ -14,7 +14,7 @@
 typedef struct Pacman Pacman;
 typedef struct Map Map;
 
-typedef enum {
+typedef enum class GhostStatus{
 	BLOCKED,						 // stay inside the ghost room
 	GO_OUT,							 // going out the ghost room
 	FREEDOM,					     // free at the map
@@ -22,7 +22,7 @@ typedef enum {
 	FLEE							 // pacman powered up
 } GhostStatus;
 
-typedef enum {
+typedef enum class GhostType{
 	Blinky,
 	Pinky,
 	Inky,

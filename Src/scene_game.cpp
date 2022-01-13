@@ -80,13 +80,13 @@ static void init(void) {
 		for (int i = 0; i < GHOST_NUM; i++) {
 			game_log("creating ghost %d\n", i);
 			if(!i) 
-				ghosts[i] = ghost_create(Blinky); 
+				ghosts[i] = ghost_create((int)GhostType::Blinky); 
 			else if(i==1)
-				ghosts[i] = ghost_create(Pinky);
+				ghosts[i] = ghost_create((int)GhostType::Pinky);
 			else if(i==2)
-				ghosts[i] = ghost_create(Inky);
+				ghosts[i] = ghost_create((int)GhostType::Inky);
 			else
-				ghosts[i] = ghost_create(Clyde);
+				ghosts[i] = ghost_create((int)GhostType::Clyde);
 			if (!ghosts[i])
 				game_abort("error creating ghost\n");
 		}
@@ -157,6 +157,14 @@ static void status_update(void) {
 		}
 		return;
 	}
+	if(check_P){
+		al_stop_timer(power_up_timer);
+		al_set_timer_count(power_up_timer,0);
+		al_start_timer(power_up_timer);
+		for(int i=0;i<GHOST_NUM;i++)
+			ghost_toggle_FLEE(ghosts[i],1);
+		return;
+	}
 	for (int i = 0; i < GHOST_NUM; i++) {
 		if (ghosts[i]->status == GO_IN)
 			continue;
@@ -173,13 +181,11 @@ static void status_update(void) {
 			break;
 		}
 		if(!cheat_mode&&RecAreaOverlap(getDrawArea(pman->objData,GAME_TICK_CD),getDrawArea(ghosts[i]->objData, GAME_TICK_CD))){
-			game_log("collide with ghost\n");
 			if(ghosts[i]->status==FLEE){
 				game_main_Score+=1111;
 				ghosts[i]->status=GO_IN;
 				ghosts[i]->speed=4;
 				ghosts[i]->previous_timer_val=al_get_timer_count(game_tick_timer);
-//				printf("ORIGINAL%d\n",ghosts[i]->previous_timer_val);
 				continue;
 			}
 			if(ghosts[i]->status==FREEDOM){
@@ -200,12 +206,12 @@ static void status_update(void) {
 			}
 			break;
 		}
-		if(check_P){
-			al_stop_timer(power_up_timer);
-			al_set_timer_count(power_up_timer,0);
-			al_start_timer(power_up_timer);
-			ghost_toggle_FLEE(ghosts[i],1);
-		}
+//		if(check_P){
+//			al_stop_timer(power_up_timer);
+//			al_set_timer_count(power_up_timer,0);
+//			al_start_timer(power_up_timer);
+//			ghost_toggle_FLEE(ghosts[i],1);
+//		}
 	}
 }
 

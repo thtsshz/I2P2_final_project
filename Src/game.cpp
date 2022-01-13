@@ -60,20 +60,15 @@ void game_create() {
 	srand(time(NULL));
 
 	allegro5_init();
-	game_log("Allegro5 initialized");
-	game_log("Game begin");
 	// Initialize shared variables.
 	shared_init();
-	game_log("Game initialized");
 	// First scene
 	game_change_scene(scene_menu_create());
 	// Draw the first frame.
 	
 	game_draw();
-	game_log("Game start event loop");
 	// This call blocks until the game is finished.
 	game_start_event_loop();
-	game_log("Game end");
 	if (active_scene.destroy)
 		(*active_scene.destroy)();
 	game_destroy();
@@ -125,9 +120,8 @@ static void allegro5_init(void) {
 
 	// Malloc mouse buttons state according to button counts.
 	const unsigned m_buttons = al_get_mouse_num_buttons();
-	game_log("There are total %u supported mouse buttons", m_buttons);
 	// mouse_state[0] will not be used.
-	mouse_state = malloc((m_buttons + 1) * sizeof(bool));
+	mouse_state = (bool*)malloc((m_buttons + 1) * sizeof(bool));
 	if (mouse_state != NULL) {
 		memset(mouse_state, false, (m_buttons + 1) * sizeof(bool));
 	}
@@ -173,10 +167,8 @@ static void game_start_event_loop(void) {
 		}
 		else if (event.type == ALLEGRO_EVENT_KEY_DOWN) {
 			// Event for keyboard key down.
-			game_log("Key with keycode %d down", event.keyboard.keycode);
 			key_state[event.keyboard.keycode] = true;
 			if (event.keyboard.keycode == ALLEGRO_KEY_ESCAPE && active_scene.name == "Menu") {
-				game_log("Escape clicked");
 				gameDone = true;
 				continue;
 			}
@@ -186,7 +178,6 @@ static void game_start_event_loop(void) {
 		}
 		else if (event.type == ALLEGRO_EVENT_KEY_UP) {
 			// Event for keyboard key up.
-			game_log("Key with keycode %d up", event.keyboard.keycode);
 			key_state[event.keyboard.keycode] = false;
 			if (active_scene.on_key_up)
 				(*active_scene.on_key_up)(event.keyboard.keycode);

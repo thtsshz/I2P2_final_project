@@ -13,11 +13,11 @@ const int map_offset_x = 25, map_offset_y = 50;			// pixel offset of where to st
 const int four_probe[4][2] = {{ 1, 0 }, { 0, 1 }, { -1,0 }, { 0, -1 }};
 ALLEGRO_BITMAP* all;
 /* Declare static function prototypes. */
-void draw_cherry(Map*, const int, const int);
-void draw_strawberry(Map*, const int, const int);
-static void draw_block_index(Map* M, int row, int col);
-static void draw_bean(Map* M, const int row, const int col);
-static void draw_power_bean(Map* M, const int row, const int col);
+void draw_cherry(Map const* M, const int, const int);
+void draw_strawberry(Map const* M, const int, const int);
+static void draw_block_index(Map const* M, int row, int col);
+static void draw_bean(Map const* M, const int row, const int col);
+static void draw_power_bean(Map const* M, const int row, const int col);
 
 const char* nthu_map[] = {
 	"#####################################",
@@ -134,16 +134,16 @@ Map* create_map(const char * filepath) {
 	Allocate a 2-Dimension dynamic char array for recording Map 
 	*/
 	M->map = (char**)malloc(sizeof(char*) * M->row_num);
-	if (!M->map) {
-		game_abort(stderr, "map char array malloc error\n");
-		return NULL;
-	}
+//	if (!M->map) {
+//		game_abort(stderr, "map char array malloc error\n");
+//		return NULL;
+//	}
 	for (int i = 0; i < M->row_num; i++) {
 		M->map[i] = (char*)malloc(sizeof(char) * (M->col_num));
-		if(!M->map[i]){
-			game_abort(stderr, "map char array malloc error\n");
-			return NULL;
-		}
+//		if(!M->map[i]){
+//			game_abort(stderr, "map char array malloc error\n");
+//			return NULL;
+//		}
 	}
 	/*
 		[TODO]
@@ -267,7 +267,7 @@ void draw_strawberry(Map* M, const int row, const int col){
 		20, 20, 0
 	);
 }
-static void draw_block_index(Map* M, const int row, const int col) {
+static void draw_block_index(Map const* M, const int row, const int col) {
 	bool U = is_wall_block(M, col, row - 1);
 	bool UR = is_wall_block(M, col + 1, row - 1);
 	bool UL = is_wall_block(M, col -1, row- 1);
@@ -324,16 +324,16 @@ static void draw_block_index(Map* M, const int row, const int col) {
 	}
 }
 
-static void draw_bean(Map* M, const int row, const int col) {
+static void draw_bean(Map const* M, const int row, const int col) {
 	al_draw_filled_circle(map_offset_x + col * block_width + block_width / 2.0, map_offset_y + row * block_height + block_height / 2.0, block_width/6.0,  al_map_rgb(234, 38, 38));
 }
 
-static void draw_power_bean(Map* M, const int row, const int col) {
+static void draw_power_bean(Map const* M, const int row, const int col) {
 	al_draw_filled_circle(map_offset_x + col * block_width + block_width / 2.0, map_offset_y + row * block_height + block_height / 2.0, block_width / 3.0, al_map_rgb(234, 178, 38));
 }
 
 
-bool is_wall_block(Map* M, int index_x, int index_y) {
+bool is_wall_block(Map const* M, int index_x, int index_y) {
 	if (index_x < 0 || index_x >= M->col_num || index_y < 0 || index_y >= M->row_num)
 		return true;
 	return M->map[index_y][index_x] == '#';
@@ -365,29 +365,29 @@ static	uint16_t end;
 	front = end = 0;
 	queue_x[end] = startGridx;
 	queue_y[end] = startGridy;
-	steped[startGridy][startGridx] = 1; /*	for dummy just means that startGrid have been visited.	*/ 
+	steped[startGridy][startGridx] = (Directions)1; /*	for dummy just means that startGrid have been visited.	*/ 
 
 	end++;
 
 	for (size_t i = 0; i < 4; i++) {
 		int8_t x = queue_x[front] + four_probe[i][0];
 		int8_t y = queue_y[front] + four_probe[i][1];
-		if (is_wall_block(M, x, y) || steped[y][x])
+		if (is_wall_block(M, x, y) || (int)steped[y][x])
 			continue;
 		queue_x[end] = x;
 		queue_y[end] = y;
 		switch (i) {
 			case 0:
-				steped[y][x] = RIGHT;
+				steped[y][x] = Directions::RIGHT;
 				break;
 			case 1:
-				steped[y][x] = DOWN;
+				steped[y][x] = Directions::DOWN;
 				break;
 			case 2:
-				steped[y][x] = LEFT;
+				steped[y][x] = Directions::LEFT;
 				break;
 			case 3:
-				steped[y][x] = UP;
+				steped[y][x] = Directions::UP;
 				break;
 			default:
 				break;
@@ -396,12 +396,12 @@ static	uint16_t end;
 	}
 	front++;
 
-	while (front != end && steped[endGridy][endGridx] == NONE) {
+	while (front != end && steped[endGridy][endGridx] == Directions::NONE) {
 
 		for (size_t i = 0; i < 4; i++) {
 			int8_t x = queue_x[front] + four_probe[i][0];
 			int8_t y = queue_y[front] + four_probe[i][1];
-			if (is_wall_block(M, x, y) || steped[y][x])
+			if (is_wall_block(M, x, y) || (int)steped[y][x])
 				continue;
 			queue_x[end] = x;
 			queue_y[end] = y;

@@ -41,16 +41,16 @@ static bool pacman_movable(Pacman* pacman, Map* M, Directions targetDirec) {
 	*/
 	int x=pacman->objData.Coord.x,y=pacman->objData.Coord.y;
 	switch (targetDirec){
-		case UP:
+		case Directions::UP:
 			y--;
 			break;
-		case DOWN:
+		case Directions::DOWN:
 			y++;
 			break;
-		case LEFT:
+		case Directions::LEFT:
 			x--;
 			break;
-		case RIGHT:
+		case Directions::RIGHT:
 			x++;
 			break;
 		default:
@@ -86,8 +86,8 @@ Pacman* pacman_create() {
 	pman->objData.Size.x = block_width;
 	pman->objData.Size.y = block_height;
 
-	pman->objData.preMove = NONE;
-	pman->objData.nextTryMove = NONE;
+	pman->objData.preMove = Directions::NONE;
+	pman->objData.nextTryMove = Directions::NONE;
 	pman->speed = basic_speed;
 
 	pman->death_anim_counter = al_create_timer(1.0f / 64);
@@ -123,7 +123,7 @@ void pacman_draw(Pacman* pman) {
 	*/
 	if(tran){
 		tran=0;
-		pman->objData.Coord.x = 24;
+		pman->objData.Coord.x = 25;
 		pman->objData.Coord.y = 24;
 	} 
 	RecArea drawArea = getDrawArea(pman->objData, GAME_TICK_CD);
@@ -154,7 +154,7 @@ void pacman_draw(Pacman* pman) {
 	else {
 		int v=pman->objData.moveCD-pman->objData.moveCD/32*32;
 		switch(pman->objData.facing){
-			case RIGHT:
+			case Directions::RIGHT:
 				if(v>16){
 					al_draw_scaled_bitmap(pman->move_sprite, 0, 0,
 						16, 16,
@@ -170,7 +170,7 @@ void pacman_draw(Pacman* pman) {
 					);
 				}
 				break;
-			case LEFT:
+			case Directions::LEFT:
 				if(v>16){
 					al_draw_scaled_bitmap(pman->move_sprite, 32, 0,
 						16, 16,
@@ -186,7 +186,7 @@ void pacman_draw(Pacman* pman) {
 					);
 				}
 				break;
-			case UP:
+			case Directions::UP:
 				if(v>16){
 					al_draw_scaled_bitmap(pman->move_sprite, 64, 0,
 						16, 16,
@@ -202,7 +202,7 @@ void pacman_draw(Pacman* pman) {
 					);
 				}
 				break;
-			case DOWN:
+			case Directions::DOWN:
 				if(v>16){
 					al_draw_scaled_bitmap(pman->move_sprite, 96, 0,
 						16, 16,
@@ -251,21 +251,21 @@ void pacman_move(Pacman* pacman, Map* M) {
 //	printf("MOVE DIRECTION%d\n",pacman->objData.preMove);
 	switch (pacman->objData.preMove)
 	{
-	case UP:
+	case Directions::UP:
 		pacman->objData.Coord.y -= 1;
-		pacman->objData.preMove = UP;
+		pacman->objData.preMove = Directions::UP;
 		break;
-	case DOWN:
+	case Directions::DOWN:
 		pacman->objData.Coord.y += 1;
-		pacman->objData.preMove = DOWN;
+		pacman->objData.preMove = Directions::DOWN;
 		break;
-	case LEFT:
+	case Directions::LEFT:
 		pacman->objData.Coord.x -= 1;
-		pacman->objData.preMove = LEFT;
+		pacman->objData.preMove = Directions::LEFT;
 		break;
-	case RIGHT:
+	case Directions::RIGHT:
 		pacman->objData.Coord.x += 1;
-		pacman->objData.preMove = RIGHT;
+		pacman->objData.preMove = Directions::RIGHT;
 		break;
 	default:
 		break;

@@ -80,13 +80,13 @@ static void init(void) {
 		for (int i = 0; i < GHOST_NUM; i++) {
 			game_log("creating ghost %d\n", i);
 			if(!i) 
-				ghosts[i] = ghost_create((int)GhostType::Blinky); 
+				ghosts[i] = new Ghost((int)GhostType::Blinky); 
 			else if(i==1)
-				ghosts[i] = ghost_create((int)GhostType::Pinky);
+				ghosts[i] = new Ghost((int)GhostType::Pinky);
 			else if(i==2)
-				ghosts[i] = ghost_create((int)GhostType::Inky);
+				ghosts[i] = new Ghost((int)GhostType::Inky);
 			else
-				ghosts[i] = ghost_create((int)GhostType::Clyde);
+				ghosts[i] = new Ghost((int)GhostType::Clyde);
 			if (!ghosts[i])
 				game_abort("error creating ghost\n");
 		}
@@ -150,8 +150,8 @@ static void status_update(void) {
 	if(back){
 		back=0;
 		for (int i = 0; i < GHOST_NUM; i++) {
-			if(ghosts[i]->status==FREEDOM){
-				ghosts[i]->status=GO_IN;
+			if(ghosts[i]->status==GhostStatus::FREEDOM){
+				ghosts[i]->status=GhostStatus::GO_IN;
 				ghosts[i]->speed=4;
 			}
 		}
@@ -162,11 +162,11 @@ static void status_update(void) {
 		al_set_timer_count(power_up_timer,0);
 		al_start_timer(power_up_timer);
 		for(int i=0;i<GHOST_NUM;i++)
-			ghost_toggle_FLEE(ghosts[i],1);
+			ghosts[i]->toggle_FLEE(1);
 		return;
 	}
 	for (int i = 0; i < GHOST_NUM; i++) {
-		if (ghosts[i]->status == GO_IN)
+		if (ghosts[i]->status == GhostStatus::GO_IN)
 			continue;
 		// [TODO]
 		// use `getDrawArea(..., GAME_TICK_CD)` and `RecAreaOverlap(..., GAME_TICK_CD)` functions to detect
@@ -181,14 +181,14 @@ static void status_update(void) {
 			break;
 		}
 		if(!cheat_mode&&RecAreaOverlap(getDrawArea(pman->objData,GAME_TICK_CD),getDrawArea(ghosts[i]->objData, GAME_TICK_CD))){
-			if(ghosts[i]->status==FLEE){
+			if(ghosts[i]->status==GhostStatus::FLEE){
 				game_main_Score+=1111;
-				ghosts[i]->status=GO_IN;
+				ghosts[i]->status=GhostStatus::GO_IN;
 				ghosts[i]->speed=4;
 				ghosts[i]->previous_timer_val=al_get_timer_count(game_tick_timer);
 				continue;
 			}
-			if(ghosts[i]->status==FREEDOM){
+			if(ghosts[i]->status==GhostStatus::FREEDOM){
 				pacman_die();
 				game_over = true;
 				break;
@@ -199,9 +199,9 @@ static void status_update(void) {
 			al_stop_timer(power_up_timer);
 			al_set_timer_count(power_up_timer,0);
 			for(i=0;i<GHOST_NUM;i++){
-				if(ghosts[i]->status==FLEE){
+				if(ghosts[i]->status==GhostStatus::FLEE){
 					ghosts[i]->speed=2;
-					ghosts[i]->status=FREEDOM;
+					ghosts[i]->status=GhostStatus::FREEDOM;
 				}
 			}
 			break;
@@ -229,7 +229,7 @@ static void update(void) {
 	status_update();
 	pacman_move(pman, basic_map);
 	for (int i = 0; i < GHOST_NUM; i++) 
-		ghosts[i]->move_script(ghosts[i], basic_map, pman);
+		(ghosts[i]->*(ghosts[i]->move_script))(basic_map, pman);
 }
 
 static void draw(void) {
@@ -250,7 +250,7 @@ static void draw(void) {
 		return;
 	// no drawing below when game over
 	for (int i = 0; i < GHOST_NUM; i++)
-		ghost_draw(ghosts[i]);
+		ghosts[i]->draw();
 	
 	//debugging mode
 	if (debug_mode) {
@@ -302,7 +302,7 @@ static void destroy(void) {
 	free(basic_map);
 	free(pman);
 	for(int i=0;i<GHOST_NUM;i++)
-		ghost_destory(ghosts[i]);
+		delete ghosts[i];
 	free(ghosts);
 }
 
@@ -313,17 +313,17 @@ static void on_key_down(int key_code) {
 		// TODO: Use allegro pre-defined enum ALLEGRO_KEY_<KEYNAME> to controll pacman movement
 		// we provided you a function `pacman_NextMove` to set the pacman's next move direction.
 		case ALLEGRO_KEY_W:{
-			pacman_NextMove(pman,UP);
+			pacman_NextMove(pman,Directions::UP);
 			break;
 		}
 		case ALLEGRO_KEY_A:
-			pacman_NextMove(pman,LEFT);
+			pacman_NextMove(pman,Directions::LEFT);
 			break;
 		case ALLEGRO_KEY_S:
-			pacman_NextMove(pman,DOWN);
+			pacman_NextMove(pman,Directions::DOWN);
 			break;
 		case ALLEGRO_KEY_D:
-			pacman_NextMove(pman,RIGHT);
+			pacman_NextMove(pman,Directions::RIGHT);
 			break;
 		case ALLEGRO_KEY_C:
 			cheat_mode = !cheat_mode;
@@ -352,7 +352,7 @@ static void render_init_screen(void) {
 	draw_map(basic_map);
 	pacman_draw(pman);
 	for (int i = 0; i < GHOST_NUM; i++) {
-		ghost_draw(ghosts[i]);
+		ghosts[i]->draw();
 	}
 
 	al_draw_text(
@@ -381,7 +381,7 @@ Scene scene_main_create(void) {
 	scene.draw = &draw;
 	scene.destroy = &destroy;
 	scene.on_key_down = &on_key_down;
-	scene.on_mouse_down = &on_mouse_down;
+	//scene.on_mouse_down = &on_mouse_down;
 	// TODO: Register more event callback functions such as keyboard, mouse, ...
 	game_log("Start scene created");
 	return scene;

@@ -30,7 +30,8 @@ typedef enum class GhostType{
 } GhostType;
 
 
-typedef struct Ghost{
+class Ghost{
+	public:
 	bitmapdata imgdata;
 	object objData;
 	script_func_ptr move_script;
@@ -41,22 +42,36 @@ typedef struct Ghost{
 	ALLEGRO_BITMAP* move_sprite;
 	ALLEGRO_BITMAP* flee_sprite;
 	ALLEGRO_BITMAP* dead_sprite;
-} Ghost;
+	Ghost(int flag);
+	~Ghost();
+	void draw();
+	void NextMove(Directions next);
+	void printGhostStatus(GhostStatus);
+	bool movable(Map* M, Directions targetDirec, bool room);
+	void toggle_FLEE(bool setFLEE);
+	void collided();
+	void move_script_GO_IN(Map* M);
+	void move_script_GO_OUT(Map* M);
+	void move_script_FLEE(Map* M, const Pacman * const pacman);
+	void red_move_script(Map* M, Pacman* pacman);
+	void red_move_script_FREEDOM(Map* M,Pacman* pacman);
+	void red_move_script_BLOCKED(Map* M);
+};
 
-Ghost* ghost_create(int flag);
-void ghost_destory(Ghost* ghost);
-void ghost_draw(Ghost* ghost);
-void ghost_NextMove(Ghost* ghost, Directions next);
-void printGhostStatus(GhostStatus);
-bool ghost_movable(Ghost* ghost, Map* M, Directions targetDirec, bool room);
-/* check if the direction is ok to move_script in; if room = true, then room will be treat as not able to move_script in */
-
-
-void ghost_toggle_FLEE(Ghost* ghosts, bool setFLEE);
-void ghost_collided(Ghost* ghost);
-void ghost_move_script_GO_IN(Ghost* ghost, Map* M);
-void ghost_move_script_GO_OUT(Ghost* ghost, Map* M);
-void ghost_move_script_FLEE(Ghost* ghost, Map* M, const Pacman * const pacman);
-
-void ghost_red_move_script(Ghost* ghost, Map* M, Pacman* pacman);
+//Ghost* ghost_create(int flag);
+//void ghost_destory(Ghost* ghost);
+//void ghost_draw(Ghost* ghost);
+//void ghost_NextMove(Ghost* ghost, Directions next);
+//void printGhostStatus(GhostStatus);
+//bool ghost_movable(Ghost* ghost, Map* M, Directions targetDirec, bool room);
+///* check if the direction is ok to move_script in; if room = true, then room will be treat as not able to move_script in */
+//
+//
+//void ghost_toggle_FLEE(Ghost* ghosts, bool setFLEE);
+//void ghost_collided(Ghost* ghost);
+//void ghost_move_script_GO_IN(Ghost* ghost, Map* M);
+//void ghost_move_script_GO_OUT(Ghost* ghost, Map* M);
+//void ghost_move_script_FLEE(Ghost* ghost, Map* M, const Pacman * const pacman);
+//
+//void ghost_red_move_script(Ghost* ghost, Map* M, Pacman* pacman);
 #endif

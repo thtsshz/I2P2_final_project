@@ -52,25 +52,25 @@ Ghost::Ghost(int flag) {
 		objData.Coord.x = cage_grid_x;
 		objData.Coord.y = cage_grid_y;
 		move_sprite = load_bitmap("Assets/ghost_move_red.png");
-		move_script = &red_move_script;
+		move_script = &Ghost::red_move_script;
 		break;
 	case GhostType::Pinky:
 		objData.Coord.x = cage_grid_x;
 		objData.Coord.y = cage_grid_y;
 		move_sprite = load_bitmap("Assets/ghost_move_pink.png");
-		move_script = &red_move_script;
+		move_script = &Ghost::red_move_script;
 		break;
 	case GhostType::Inky:
 		objData.Coord.x = cage_grid_x;
 		objData.Coord.y = cage_grid_y;
 		move_sprite = load_bitmap("Assets/ghost_move_blue.png");
-		move_script = &red_move_script;
+		move_script = &Ghost::red_move_script;
 		break;
 	default:
 		objData.Coord.x = cage_grid_x;
 		objData.Coord.y = cage_grid_y;
 		move_sprite = load_bitmap("Assets/ghost_move_orange.png");
-		move_script = &red_move_script;
+		move_script = &Ghost::red_move_script;
 		break;
 	}
 }

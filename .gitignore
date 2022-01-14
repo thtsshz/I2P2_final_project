@@ -5,7 +5,7 @@
 *.txt
 *.win
 *.o
+*.out
 
 .vscode/*
-Makefile
-*.out
+final

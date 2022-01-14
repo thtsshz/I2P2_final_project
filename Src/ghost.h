@@ -30,19 +30,22 @@ typedef enum class GhostType{
 } GhostType;
 
 
-class Ghost{
-	public:
+class Ghost
+{
+private:
 	bitmapdata imgdata;
-	object objData;
-	script_func_ptr move_script;
-	int speed;
-	int64_t previous_timer_val;
 	GhostType typeFlag;
-	GhostStatus status;
 	ALLEGRO_BITMAP* move_sprite;
 	ALLEGRO_BITMAP* flee_sprite;
 	ALLEGRO_BITMAP* dead_sprite;
-	Ghost(int flag);
+
+public:
+	object objData;
+	int speed;
+	int64_t previous_timer_val;
+	GhostStatus status;
+	script_func_ptr move_script;
+	Ghost(GhostType);
 	~Ghost();
 	void draw();
 	void NextMove(Directions next);

@@ -80,13 +80,13 @@ static void init(void) {
 		for (int i = 0; i < GHOST_NUM; i++) {
 			game_log("creating ghost %d\n", i);
 			if(!i) 
-				ghosts[i] = new Ghost((int)GhostType::Blinky); 
+				ghosts[i] = new Ghost(GhostType::Blinky); 
 			else if(i==1)
-				ghosts[i] = new Ghost((int)GhostType::Pinky);
+				ghosts[i] = new Ghost(GhostType::Pinky);
 			else if(i==2)
-				ghosts[i] = new Ghost((int)GhostType::Inky);
+				ghosts[i] = new Ghost(GhostType::Inky);
 			else
-				ghosts[i] = new Ghost((int)GhostType::Clyde);
+				ghosts[i] = new Ghost(GhostType::Clyde);
 			if (!ghosts[i])
 				game_abort("error creating ghost\n");
 		}

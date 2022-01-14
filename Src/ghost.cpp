@@ -31,10 +31,10 @@ static int check=0;
 // part, you will have more understanding on whole mechanism.
 static const int basic_speed = 2;
 
-Ghost::Ghost(int flag) {
+Ghost::Ghost(GhostType flag) {
 
 	// NOTODO
-	typeFlag = (GhostType)flag;
+	typeFlag = flag;
 	objData.Size.x = block_width;
 	objData.Size.y = block_height;
 

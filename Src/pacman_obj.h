@@ -13,30 +13,30 @@
 // you should include the corresponding header file for its definition.
 // Advance reading : https://stackoverflow.com/questions/18658438/what-is-forward-declaration-and-the-difference-between-typedef-struct-x-and
 
-typedef struct Ghost Ghost;
 typedef struct Map Map;
 
-typedef struct Pacman{
-
+class Pacman
+{
+private:
 	bitmapdata imgdata;
-	object objData;
-	func_ptr move;
-	int speed;
+	func_ptr _move;
 	int color;
 	bool powerUp;
-	ALLEGRO_TIMER* death_anim_counter;
 	ALLEGRO_BITMAP* move_sprite;
 	ALLEGRO_BITMAP* die_sprite;
-} Pacman;
+	bool movable(Map *, Directions);
 
-Pacman* pacman_create();
-void pacman_destory(Pacman* pman);
-
-void pacman_draw(Pacman* pacman);
-void pacman_move(Pacman* pacman, Map* M);
-void pacman_eatItem(Pacman* pacman, const char Item);
-
-void pacman_NextMove(Pacman* pacman, Directions next);
-void pacman_die();
+public:
+	object objData;
+	int speed;
+	ALLEGRO_TIMER* death_anim_counter;
+	Pacman();
+	~Pacman();
+	void draw();
+	void move(Map* M);
+	void eatItem(const char Item);
+	void NextMove(Directions next);
+	void die();
+};
 
 #endif // !PACMAN_OBJ_H

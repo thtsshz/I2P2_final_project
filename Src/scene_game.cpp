@@ -64,7 +64,7 @@ static void init(void) {
 		game_abort("error on creating map");
 	}	
 	// create pacman
-	pman = pacman_create();
+	pman = new Pacman();
 	if (!pman) {
 		game_abort("error on creating pacamn\n");
 	}
@@ -119,22 +119,22 @@ static void checkItem(void) {
 	switch (basic_map->map[Grid_y][Grid_x])
 	{
 	case '.':
-		pacman_eatItem(pman,'.');
+		pman->eatItem('.');
 		basic_map->beansNum--;
 		game_main_Score+=100;
 		break;
 	case 'P':
-		pacman_eatItem(pman,'P');
+		pman->eatItem('P');
 		basic_map->beansNum--;
 		game_main_Score+=555;
 		check_P=1;
 		break;
 	case 'F':
-		pacman_eatItem(pman,'F');
+		pman->eatItem('F');
 		game_main_Score+=326;
 		break;
 	case 'S':
-		pacman_eatItem(pman,'S');
+		pman->eatItem('S');
 		game_main_Score+=326;
 		break;
 	default:
@@ -189,7 +189,7 @@ static void status_update(void) {
 				continue;
 			}
 			if(ghosts[i]->status==GhostStatus::FREEDOM){
-				pacman_die();
+				pman->die();
 				game_over = true;
 				break;
 			} 
@@ -227,7 +227,7 @@ static void update(void) {
 	step();
 	checkItem();
 	status_update();
-	pacman_move(pman, basic_map);
+	pman->move(basic_map);
 	for (int i = 0; i < GHOST_NUM; i++) 
 		(ghosts[i]->*(ghosts[i]->move_script))(basic_map, pman);
 }
@@ -245,7 +245,7 @@ static void draw(void) {
             ALLEGRO_ALIGN_CENTER,str);
 	draw_map(basic_map);
 
-	pacman_draw(pman);
+	pman->draw();
 	if (game_over)
 		return;
 	// no drawing below when game over
@@ -311,19 +311,19 @@ static void on_key_down(int key_code) {
 	{
 		// [HACKATHON 1-1]	
 		// TODO: Use allegro pre-defined enum ALLEGRO_KEY_<KEYNAME> to controll pacman movement
-		// we provided you a function `pacman_NextMove` to set the pacman's next move direction.
+		// we provided you a function `pman->NextMove` to set the pacman's next move direction.
 		case ALLEGRO_KEY_W:{
-			pacman_NextMove(pman,Directions::UP);
+			pman->NextMove(Directions::UP);
 			break;
 		}
 		case ALLEGRO_KEY_A:
-			pacman_NextMove(pman,Directions::LEFT);
+			pman->NextMove(Directions::LEFT);
 			break;
 		case ALLEGRO_KEY_S:
-			pacman_NextMove(pman,Directions::DOWN);
+			pman->NextMove(Directions::DOWN);
 			break;
 		case ALLEGRO_KEY_D:
-			pacman_NextMove(pman,Directions::RIGHT);
+			pman->NextMove(Directions::RIGHT);
 			break;
 		case ALLEGRO_KEY_C:
 			cheat_mode = !cheat_mode;
@@ -350,7 +350,7 @@ static void render_init_screen(void) {
 	al_clear_to_color(al_map_rgb(0, 0, 0));
 
 	draw_map(basic_map);
-	pacman_draw(pman);
+	pman->draw();
 	for (int i = 0; i < GHOST_NUM; i++) {
 		ghosts[i]->draw();
 	}

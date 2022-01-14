@@ -134,7 +134,7 @@ static void on_key_down(int keycode) {
 Scene scene_menu_create(void) {
 	Scene scene;
 	memset(&scene, 0, sizeof(Scene));
-	scene.name = "Menu";
+	scene.name = strdup("Menu");
 	scene.initialize = &init;
 	scene.draw = &draw;
 	scene.destroy = &destroy;

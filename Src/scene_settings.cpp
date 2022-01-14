@@ -62,7 +62,7 @@ Scene scene_settings_create() {
 	font=al_load_ttf_font("Assets/pirulen.ttf", 48, 0);
 	small_font=al_load_ttf_font("Assets/pirulen.ttf", 24, 0);
 	memset(&scene, 0, sizeof(Scene));
-	scene.name = "Settings";
+	scene.name = strdup("Settings");
 	scene.draw = &draw;
 	scene.on_key_down=&on_key_down;
 	game_log("Settings scene created");

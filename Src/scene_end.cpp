@@ -58,7 +58,7 @@ Scene scene_end_create(){
 	Scene scene;
 	memset(&scene, 0, sizeof(Scene));
 	scene.initialize=&init;
-	scene.name = "End";
+	scene.name = strdup("End");
 	scene.draw = &draw;
 	scene.destroy = &destroy;
 	scene.on_key_down=&on_key_down;

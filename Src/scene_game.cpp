@@ -375,7 +375,7 @@ static void render_init_screen(void) {
 Scene scene_main_create(void) {
 	Scene scene;
 	memset(&scene, 0, sizeof(Scene));
-	scene.name = "Start";
+	scene.name = strdup("Start");
 	scene.initialize = &init;
 	scene.update = &update;
 	scene.draw = &draw;

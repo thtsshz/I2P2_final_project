@@ -2,7 +2,7 @@
 #include "ghost.hpp"
 #include "pacman_obj.hpp"
 #include "map.hpp"
-#include "game.h" 
+#include "game.hpp" 
 /* Shared variables */
 #define GO_OUT_TIME 256
 //extern uint32_t GAME_TICK_CD;

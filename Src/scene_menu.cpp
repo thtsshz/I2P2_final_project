@@ -7,9 +7,9 @@
 #include <allegro5/allegro_native_dialog.h>
 #include <math.h>
 #include "scene_menu_object.h"
-#include "scene_settings.h"
-#include "scene_game.h"
-#include "scene_menu.h"
+#include "scene_settings.hpp"
+#include "scene_game.hpp"
+#include "scene_menu.hpp"
 #include "utility.h"
 #include "shared.h"
 /* Internal Variables*/
@@ -28,22 +28,7 @@ extern bool check_color;
 //	Uncomment and fill the code below
 static Button btnSettings;
 
-static void init() {
-
-	// [HACKATHON 3-2]
-	// TODO: Create button to settings
-	//	Uncomment and fill the code below
-	btnSettings = button_create(730, 20, 50, 50, "Assets/settings.png", "Assets/settings2.png");
-	gameTitle = load_bitmap("Assets/title.png");
-	gameTitleW = al_get_bitmap_width(gameTitle);
-	gameTitleH = al_get_bitmap_height(gameTitle);
-	stop_bgm(menuBGM);
-	menuBGM = play_bgm(themeMusic, music_volume);
-
-}
-
-
-static void draw() {
+void SceneMenu::draw() {
 
 	al_clear_to_color(al_map_rgb(0, 0, 0));
 
@@ -83,7 +68,7 @@ static void draw() {
 	drawButton(btnSettings);
 }
 
-static void on_mouse_move(int a, int mouse_x, int mouse_y, int f) {
+void SceneMenu::on_mouse_move(int a, int mouse_x, int mouse_y, int f) {
 	//	[HACKATHON 3-7]
 	//	TODO: Update button's status(hovered), and utilize the function `pnt_in_rect`, which you just implemented
 	//	Uncomment and fill the code below
@@ -94,13 +79,13 @@ static void on_mouse_move(int a, int mouse_x, int mouse_y, int f) {
 //	[HACKATHON 3-8]
 //	TODO: When btnSettings clicked, switch to settings scene
 //	Uncomment and fill the code below
-static void on_mouse_down(int,int,int,int) {
+void SceneMenu::on_mouse_down(int a, int b, int c, int d) {
 	if (btnSettings.hovered)
-		game_change_scene(scene_settings_create());
+		game_change_scene(new SceneSetting());
 }
 
 
-static void destroy() {
+SceneMenu::~SceneMenu() {
 	stop_bgm(menuBGM);
 	al_destroy_bitmap(gameTitle);
 	//	[HACKATHON 3-10]
@@ -110,11 +95,11 @@ static void destroy() {
 	al_destroy_bitmap(btnSettings.hovered_img);
 }
 
-static void on_key_down(int keycode) {
+void SceneMenu::on_key_down(int keycode) {
 
 	switch (keycode) {
 		case ALLEGRO_KEY_ENTER:
-			game_change_scene(scene_main_create());
+			game_change_scene(new SceneMain());
 			break;
 		case ALLEGRO_KEY_B:
 			check_color^=1;
@@ -131,20 +116,20 @@ static void on_key_down(int keycode) {
 // Define your normal function prototypes below.
 
 // The only function that is shared across files.
-Scene scene_menu_create(void) {
-	Scene scene;
-	memset(&scene, 0, sizeof(Scene));
-	scene.name = strdup("Menu");
-	scene.initialize = &init;
-	scene.draw = &draw;
-	scene.destroy = &destroy;
-	scene.on_key_down = &on_key_down;
-	scene.on_mouse_move = &on_mouse_move;
+SceneMenu::SceneMenu(void) : Scene() {
+	// [HACKATHON 3-2]
+	// TODO: Create button to settings
+	//	Uncomment and fill the code below
+	btnSettings = button_create(730, 20, 50, 50, "Assets/settings.png", "Assets/settings2.png");
+	gameTitle = load_bitmap("Assets/title.png");
+	gameTitleW = al_get_bitmap_width(gameTitle);
+	gameTitleH = al_get_bitmap_height(gameTitle);
+	stop_bgm(menuBGM);
+	menuBGM = play_bgm(themeMusic, music_volume);
+	name = strdup("Menu");
 	// [HACKATHON 3-9]
 	// TODO: Register on_mouse_down.
 	// Uncomment the code below.
-	scene.on_mouse_down = &on_mouse_down;
 	// TODO: Register more event callback functions such as keyboard, mouse, ...
 	game_log("Menu scene created");
-	return scene;
 }

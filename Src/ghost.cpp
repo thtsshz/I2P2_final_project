@@ -6,7 +6,7 @@
 #include "ghost.hpp"
 #include "pacman_obj.hpp"
 #include "map.hpp"
-#include "game.h"
+#include "game.hpp"
 /* global variables*/
 // [ NOTE ]
 // if you change the map .txt to your own design.

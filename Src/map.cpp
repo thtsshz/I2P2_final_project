@@ -2,7 +2,7 @@
 #include <string.h>
 #include <stdio.h>
 #include <allegro5/allegro_primitives.h>
-#include "game.h"
+#include "game.hpp"
 #include "map.hpp"
 #define QUEUE_SIZE 3000
 

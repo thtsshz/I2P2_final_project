@@ -5,14 +5,14 @@
 #include <allegro5/allegro.h>
 #include <string.h>
 #include <stdio.h>
-#include "game.h"
+#include "game.hpp"
 #include "shared.h"
 #include "utility.h"
-#include "scene_game.h"
-#include "scene_menu.h"
-#include "scene_settings.h"
+#include "scene_game.hpp"
+#include "scene_menu.hpp"
+#include "scene_settings.hpp"
 #include "pacman_obj.hpp"
-#include "scene_end.h"
+#include "scene_end.hpp"
 #include "ghost.hpp"
 #include "map.hpp"
 // [HACKATHON 2-0]
@@ -38,69 +38,8 @@ bool debug_mode = false;
 bool cheat_mode = false;
 bool check_P=0;
 /* Declare static function prototypes */
-static void init(void);
-static void step(void);
-static void checkItem(void);
-static void status_update(void);
-static void update(void);
-static void draw(void);
-static void printinfo(void);
-static void destroy(void);
-static void on_key_down(int key_code);
-static void on_mouse_down(void);
-static void render_init_screen(void);
-static void draw_hitboxes(void);
 
-static void init(void) {
-	game_over = false;
-	game_main_Score = 0;
-	// create map
-	basic_map = new Map(nullptr);
-	font=al_load_ttf_font("Assets/pirulen.ttf", 24, 0);
-	// [TODO]
-	// Create map from .txt file and design your own map !!
-	//basic_map = create_map("Assets/map_nthu.txt");
-	if (!basic_map) {
-		game_abort("error on creating map");
-	}	
-	// create pacman
-	pman = new Pacman();
-	if (!pman) {
-		game_abort("error on creating pacamn\n");
-	}
-	
-	// allocate ghost memory
-	// [HACKATHON 2-1]
-	// TODO: Allocate dynamic memory for ghosts array.
-	ghosts = (Ghost**)malloc(sizeof(Ghost*) * GHOST_NUM);
-//	else {
-		// [HACKATHON 2-2]
-		// TODO: create a ghost.
-		// Try to look the definition of ghost_create and figure out what should be placed here.
-		for (int i = 0; i < GHOST_NUM; i++) {
-			game_log("creating ghost %d\n", i);
-			if(!i) 
-				ghosts[i] = new Ghost(GhostType::Blinky); 
-			else if(i==1)
-				ghosts[i] = new Ghost(GhostType::Pinky);
-			else if(i==2)
-				ghosts[i] = new Ghost(GhostType::Inky);
-			else
-				ghosts[i] = new Ghost(GhostType::Clyde);
-			if (!ghosts[i])
-				game_abort("error creating ghost\n");
-		}
-//	}
-	GAME_TICK = 0;
-
-	render_init_screen();
-	power_up_timer = al_create_timer(1.0f); // 1 tick / sec
-	if (!power_up_timer)
-		game_abort("Error on create timer\n");
-	return ;
-}
-
-static void step(void) {
+void SceneMain::step(void) {
 	if (pman->objData.moveCD > 0)
 		pman->objData.moveCD -= pman->speed;
 	for (int i = 0; i < GHOST_NUM; i++) {
@@ -109,7 +48,7 @@ static void step(void) {
 			ghosts[i]->objData.moveCD -= ghosts[i]->speed;
 	}
 }
-static void checkItem(void) {
+void SceneMain::checkItem(void) {
 	check_P=0;
 	int Grid_x = pman->objData.Coord.x, Grid_y = pman->objData.Coord.y;
 	if (Grid_y >= basic_map->row_num - 1 || Grid_y <= 0 || Grid_x >= basic_map->col_num - 1 || Grid_x <= 0)
@@ -146,7 +85,8 @@ static void checkItem(void) {
 	if(basic_map->map[Grid_y][Grid_x]!='#'&&basic_map->map[Grid_y][Grid_x]!='B')
 		basic_map->map[Grid_y][Grid_x]=' ';
 }
-static void status_update(void) {
+
+void SceneMain::status_update(void) {
 	if(back){
 		back=0;
 		for (int i = 0; i < GHOST_NUM; i++) {
@@ -215,13 +155,13 @@ static void status_update(void) {
 	}
 }
 
-static void update(void) {
+void SceneMain::update(void) {
 
 	if (game_over) {
 		//	[TODO] start pman->death_anim_counter and schedule a game-over event (e.g change scene to menu) after Pacman's death animation finished
 		al_start_timer(pman->death_anim_counter);
 		if(al_get_timer_count(pman->death_anim_counter)>192)
-			game_change_scene(scene_end_create());
+			game_change_scene(new SceneEnd());
 		return;
 	}
 	step();
@@ -232,7 +172,7 @@ static void update(void) {
 		(ghosts[i]->*(ghosts[i]->move_script))(basic_map, pman);
 }
 
-static void draw(void) {
+void SceneMain::draw(void) {
 
 	al_clear_to_color(al_map_rgb(0, 0, 0));
 
@@ -259,7 +199,7 @@ static void draw(void) {
 
 }
 
-static void draw_hitboxes(void) {
+void SceneMain::draw_hitboxes(void) {
 	RecArea pmanHB = getDrawArea(pman->objData, GAME_TICK_CD);
 	al_draw_rectangle(
 		pmanHB.x, pmanHB.y,
@@ -291,7 +231,8 @@ int cmp(const void *a,const void *b){
 		return 1;
 	return -1;
 }
-static void destroy(void) {
+
+SceneMain::~SceneMain(void) {
 	/*
 		[TODO]
 		free map array, Pacman and ghosts
@@ -306,7 +247,7 @@ static void destroy(void) {
 	free(ghosts);
 }
 
-static void on_key_down(int key_code) {
+void SceneMain::on_key_down(int key_code) {
 	switch (key_code)
 	{
 		// [HACKATHON 1-1]	
@@ -341,12 +282,12 @@ static void on_key_down(int key_code) {
 
 }
 
-static void on_mouse_down(void) {
+void SceneMain::on_mouse_down(int, int, int, int) {
 	// nothing here
 
 }
 
-static void render_init_screen(void) {
+void SceneMain::render_init_screen(void) {
 	al_clear_to_color(al_map_rgb(0, 0, 0));
 
 	basic_map->draw();
@@ -372,17 +313,56 @@ static void render_init_screen(void) {
 // Define your normal function prototypes below.
 
 // The only function that is shared across files.
-Scene scene_main_create(void) {
-	Scene scene;
-	memset(&scene, 0, sizeof(Scene));
-	scene.name = strdup("Start");
-	scene.initialize = &init;
-	scene.update = &update;
-	scene.draw = &draw;
-	scene.destroy = &destroy;
-	scene.on_key_down = &on_key_down;
+SceneMain::SceneMain(void) : Scene() {
+
+	game_over = false;
+	game_main_Score = 0;
+	// create map
+	basic_map = new Map(nullptr);
+	font = al_load_ttf_font("Assets/pirulen.ttf", 24, 0);
+	// [TODO]
+	// Create map from .txt file and design your own map !!
+	//basic_map = create_map("Assets/map_nthu.txt");
+	if (!basic_map) {
+		game_abort("error on creating map");
+	}	
+	// create pacman
+	pman = new Pacman();
+	if (!pman) {
+		game_abort("error on creating pacamn\n");
+	}
+	
+	// allocate ghost memory
+	// [HACKATHON 2-1]
+	// TODO: Allocate dynamic memory for ghosts array.
+	ghosts = (Ghost**)malloc(sizeof(Ghost*) * GHOST_NUM);
+//	else {
+		// [HACKATHON 2-2]
+		// TODO: create a ghost.
+		// Try to look the definition of ghost_create and figure out what should be placed here.
+		for (int i = 0; i < GHOST_NUM; i++) {
+			game_log("creating ghost %d\n", i);
+			if(!i) 
+				ghosts[i] = new Ghost(GhostType::Blinky); 
+			else if(i==1)
+				ghosts[i] = new Ghost(GhostType::Pinky);
+			else if(i==2)
+				ghosts[i] = new Ghost(GhostType::Inky);
+			else
+				ghosts[i] = new Ghost(GhostType::Clyde);
+			if (!ghosts[i])
+				game_abort("error creating ghost\n");
+		}
+//	}
+	GAME_TICK = 0;
+
+	render_init_screen();
+	power_up_timer = al_create_timer(1.0f); // 1 tick / sec
+	if (!power_up_timer)
+		game_abort("Error on create timer\n");
+
+	name = strdup("Start");
 	//scene.on_mouse_down = &on_mouse_down;
 	// TODO: Register more event callback functions such as keyboard, mouse, ...
 	game_log("Start scene created");
-	return scene;
 }

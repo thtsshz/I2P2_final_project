@@ -1,5 +1,5 @@
  //#pragma once
-// [game.h]
+// [game.hpp]
 // declare shared variables and allegro5 related routines.
 
 // Extern variables are "declare without defining". When
@@ -35,20 +35,22 @@ typedef void(*func_ptr_mouse)(int btn, int x, int y, int dz);
 // TODO: More function pointer typedefs for other events.
 
 // Structure containing all scene functions / event callbacks.
-typedef struct {
-	char* name;
-	func_ptr initialize;
-	func_ptr update;
-	func_ptr draw;
-	func_ptr destroy;
-	func_ptr_keyboard on_key_down;
-	func_ptr_keyboard on_key_up;
-	func_ptr_mouse on_mouse_down;
-	func_ptr_mouse on_mouse_move;
-	func_ptr_mouse on_mouse_up;
-	func_ptr_mouse on_mouse_scroll;
+class Scene
+{
+public:
+	char *name;
+	Scene() {};
+	virtual ~Scene() = default;
+	virtual void update() {}
+	virtual void draw() {}
+	virtual void on_key_down(int) {}
+	virtual void on_key_up(int) {}
+	virtual void on_mouse_down(int, int, int, int) {}
+	virtual void on_mouse_move(int, int, int, int) {}
+	virtual void on_mouse_up(int, int, int, int) {}
+	virtual void on_mouse_scroll(int, int, int, int) {}
 	// TODO: More event callbacks such as timer tick, video finished, ...
-} Scene;
+};
 
 // Frame rate (frame per second)
 extern const int FPS;
@@ -63,7 +65,7 @@ const uint32_t GAME_TICK_CD=64;
 /* Input states */
 
 // The active scene. Events will be triggered through function pointers.
-extern Scene active_scene;
+extern Scene *active_scene;
 // Keyboard state, whether the key is down or not.
 extern bool key_state[ALLEGRO_KEY_MAX];
 // Mouse state, whether the key is down or not.
@@ -78,7 +80,7 @@ extern int mouse_x, mouse_y;
 // Create and start running the game.
 void game_create(void);
 // Function to change from one scene to another.
-void game_change_scene(Scene next_scene);
+void game_change_scene(Scene *next_scene);
 
 // Display error message and exit the program, used like 'game_log'.
 // Write formatted output to stdout and file from the format string.

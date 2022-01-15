@@ -3,7 +3,7 @@
 
 #include "utility.h"
 #include "shared.h"
-#include "game.h"
+#include "game.hpp"
 
 typedef struct Button {
 	RecArea body;

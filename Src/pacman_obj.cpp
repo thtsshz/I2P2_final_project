@@ -1,7 +1,7 @@
 #include <allegro5/allegro_primitives.h>
 #include "pacman_obj.hpp"
 #include "map.hpp"
-#include "game.h" 
+#include "game.hpp" 
 #include "shared.h"
  
 /* Static variables */

@@ -2,7 +2,7 @@
 // you should implement the utility functions defined in the header.
 
 #include "utility.h"
-#include "game.h"
+#include "game.hpp"
 #include <math.h>
 #include <stdlib.h>
 #include <allegro5/allegro_image.h>

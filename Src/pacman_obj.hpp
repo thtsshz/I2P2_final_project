@@ -2,7 +2,7 @@
 #define PACMAN_OBJ_H
 
 #include "utility.h"
-#include "game.h"
+#include "game.hpp"
 
 // <Forward Declaration>
 // forward declarations can be useful when you need to have looping struct declarations,

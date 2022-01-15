@@ -1,6 +1,6 @@
 
 
-#include "game.h"
+#include "game.hpp"
 // Program entry point
 // Returns program exit code.
 int main(int argc, char **argv) 

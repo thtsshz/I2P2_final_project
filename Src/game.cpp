@@ -13,15 +13,15 @@
 #include <allegro5/allegro_ttf.h>
 #include <allegro5/allegro_audio.h>
 #include <allegro5/allegro_acodec.h>
-#include "game.h"
-#include "scene_game.h" 
-#include "scene_menu.h"
+#include "game.hpp"
+#include "scene_game.hpp" 
+#include "scene_menu.hpp"
 /* global variables*/
 const int FPS = 60;
 const int SCREEN_W = 800;
 const int SCREEN_H = 800;
 const int RESERVE_SAMPLES = 4;
-Scene active_scene;
+Scene *active_scene = nullptr;
 bool key_state[ALLEGRO_KEY_MAX];
 bool* mouse_state;
 /* Shared variables. */
@@ -63,14 +63,12 @@ void game_create() {
 	// Initialize shared variables.
 	shared_init();
 	// First scene
-	game_change_scene(scene_menu_create());
+	game_change_scene(new SceneMenu());
 	// Draw the first frame.
 	
 	game_draw();
 	// This call blocks until the game is finished.
 	game_start_event_loop();
-	if (active_scene.destroy)
-		(*active_scene.destroy)();
 	game_destroy();
 }
 
@@ -168,33 +166,28 @@ static void game_start_event_loop(void) {
 		else if (event.type == ALLEGRO_EVENT_KEY_DOWN) {
 			// Event for keyboard key down.
 			key_state[event.keyboard.keycode] = true;
-			if (event.keyboard.keycode == ALLEGRO_KEY_ESCAPE && !strcmp(active_scene.name, "Menu")) {
+			if (event.keyboard.keycode == ALLEGRO_KEY_ESCAPE && !strcmp(active_scene->name, "Menu")) {
 				gameDone = true;
 				continue;
 			}
-			if (active_scene.on_key_down){
-				(*active_scene.on_key_down)(event.keyboard.keycode);
-			}
+			active_scene->on_key_down(event.keyboard.keycode);
 		}
 		else if (event.type == ALLEGRO_EVENT_KEY_UP) {
 			// Event for keyboard key up.
 			key_state[event.keyboard.keycode] = false;
-			if (active_scene.on_key_up)
-				(*active_scene.on_key_up)(event.keyboard.keycode);
+			active_scene->on_key_up(event.keyboard.keycode);
 		}
 		else if (event.type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN) {
 			// Event for mouse key down.
 			//game_log("Mouse button %d down at (%d, %d)", event.mouse.button, event.mouse.x, event.mouse.y);
 			mouse_state[event.mouse.button] = true;
-			if (active_scene.on_mouse_down)
-				(*active_scene.on_mouse_down)(event.mouse.button, event.mouse.x, event.mouse.y, 0);
+			active_scene->on_mouse_down(event.mouse.button, event.mouse.x, event.mouse.y, 0);
 		}
 		else if (event.type == ALLEGRO_EVENT_MOUSE_BUTTON_UP) {
 			// Event for mouse key up.
 			//game_log("Mouse button %d up at (%d, %d)", event.mouse.button, event.mouse.x, event.mouse.y);
 			mouse_state[event.mouse.button] = false;
-			if (active_scene.on_mouse_up)
-				(*active_scene.on_mouse_up)(event.mouse.button, event.mouse.x, event.mouse.y, 0);
+			active_scene->on_mouse_up(event.mouse.button, event.mouse.x, event.mouse.y, 0);
 		}
 		else if (event.type == ALLEGRO_EVENT_MOUSE_AXES) {
 			if (event.mouse.dx != 0 || event.mouse.dy != 0) {
@@ -202,14 +195,12 @@ static void game_start_event_loop(void) {
 				//game_log("Mouse move_script to (%d, %d)", event.mouse.x, event.mouse.y);
 				mouse_x = event.mouse.x;
 				mouse_y = event.mouse.y;
-				if (active_scene.on_mouse_move)
-					(*active_scene.on_mouse_move)(0, event.mouse.x, event.mouse.y, 0);
+				active_scene->on_mouse_move(0, event.mouse.x, event.mouse.y, 0);
 			}
 			else if (event.mouse.dz != 0) {
 				// Event for mouse scroll.
 				//game_log("Mouse scroll at (%d, %d) with delta %d", event.mouse.x, event.mouse.y, event.mouse.dz);
-				if (active_scene.on_mouse_scroll)
-					(*active_scene.on_mouse_scroll)(0, event.mouse.x, event.mouse.y, event.mouse.dz);
+				active_scene->on_mouse_scroll(0, event.mouse.x, event.mouse.y, event.mouse.dz);
 			}
 		}
 		// TODO: Process more events and call callbacks by adding more
@@ -227,14 +218,12 @@ static void game_start_event_loop(void) {
 }
 
 static void game_update(void) {
-	if (active_scene.update)
-		(*active_scene.update)();
+	active_scene->update();
 }
 
 static void game_draw(void) {
 	al_clear_to_color(al_map_rgb(0, 0, 0));
-	if (active_scene.draw)
-		(*active_scene.draw)();
+	active_scene->draw();
 	al_flip_display();
 }
 
@@ -250,18 +239,17 @@ static void game_destroy(void) {
 	free(mouse_state);
 }
 
-void game_change_scene(Scene next_scene) {
-	game_log("Change scene from %s to %s",
-		active_scene.name ? active_scene.name : "(unnamed)",
-		next_scene.name ? next_scene.name : "(unnamed)");
-	if (active_scene.destroy)
-		(*active_scene.destroy)();
+void game_change_scene(Scene *next_scene) {
+	if (active_scene)
+		game_log("Change scene from %s to %s",
+			active_scene->name ? active_scene->name : "(unnamed)",
+			next_scene->name ? next_scene->name : "(unnamed)");
 	if(game_tick_timer == NULL)
 		game_abort("NULL game tick timer!!!");
 	al_stop_timer(game_tick_timer);
+	if (active_scene)
+		delete active_scene;
 	active_scene = next_scene;
-	if (active_scene.initialize)
-		active_scene.initialize();
 	if (game_tick_timer == NULL) {
 		game_abort("NULL game tick timer!!!");
 	}

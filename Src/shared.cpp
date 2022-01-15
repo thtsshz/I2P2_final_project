@@ -3,8 +3,8 @@
 
 #include "shared.h"
 #include "utility.h"
-#include "game.h"
-// #include "scene_menu.h"
+#include "game.hpp"
+// #include "scene_menu.hpp"
 
 ALLEGRO_FONT* font_pirulen_32;
 ALLEGRO_FONT* font_pirulen_24;

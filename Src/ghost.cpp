@@ -3,9 +3,9 @@
 #include <allegro5/allegro_font.h>
 #include <allegro5/allegro_ttf.h>
 #include <allegro5/allegro.h>
-#include "ghost.h"
-#include "pacman_obj.h"
-#include "map.h"
+#include "ghost.hpp"
+#include "pacman_obj.hpp"
+#include "map.hpp"
 #include "game.h"
 /* global variables*/
 // [ NOTE ]
@@ -316,7 +316,7 @@ bool Ghost::movable(Map* M, Directions targetDirec, bool room) {
 		return false;
 	}
 
-	if (is_wall_block(M,x,y) || (room && is_room_block(M,x,y)))
+	if (M->is_wall_block(x, y) || (room && M->is_room_block(x, y)))
 		return false;
 	return true;
 
@@ -355,7 +355,7 @@ void Ghost::move_script_GO_IN(Map* M) {
 	// `shortest_path_direc` is a function that returns the direction of shortest path.
 	// Check `map.c` for its detail usage.
 	// For GO_IN state.
-	objData.nextTryMove = shortest_path_direc(M, objData.Coord.x, objData.Coord.y, cage_grid_x, cage_grid_y+1);
+	objData.nextTryMove = M->shortest_path_direc(objData.Coord.x, objData.Coord.y, cage_grid_x, cage_grid_y + 1);
 }
 void Ghost::move_script_GO_OUT(Map* M) {
 	// Description
@@ -378,7 +378,7 @@ int inv2(int dir){
 } 
 void Ghost::move_script_FLEE(Map* M, const Pacman * const pacman) {
 	// [TODO]
-	Directions shortestDirection = shortest_path_direc(M, objData.Coord.x, objData.Coord.y, pacman->objData.Coord.x, pacman->objData.Coord.y);
+	Directions shortestDirection = M->shortest_path_direc(objData.Coord.x, objData.Coord.y, pacman->objData.Coord.x, pacman->objData.Coord.y);
 	// Description:
 	// The concept here is to simulate ghosts running away from pacman while pacman is having power bean ability.
 	// To achieve this, think in this way. We first get the direction to shortest path to pacman, call it K (K is either UP, DOWN, RIGHT or LEFT).

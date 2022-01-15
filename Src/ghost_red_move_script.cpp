@@ -1,7 +1,7 @@
 
-#include "ghost.h"
-#include "pacman_obj.h"
-#include "map.h"
+#include "ghost.hpp"
+#include "pacman_obj.hpp"
+#include "map.hpp"
 #include "game.h" 
 /* Shared variables */
 #define GO_OUT_TIME 256

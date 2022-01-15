@@ -6,7 +6,7 @@
 #include <allegro5/allegro_ttf.h>
 #include <allegro5/allegro.h>
 #include "scene_end.hpp"
-#include "scene_menu_object.h"
+#include "scene_menu_object.hpp"
 #include "scene_settings.hpp"
 #include "scene_game.hpp"
 #include "scene_menu.hpp"

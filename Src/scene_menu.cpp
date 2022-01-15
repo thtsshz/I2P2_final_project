@@ -6,7 +6,7 @@
 #include <allegro5/allegro_primitives.h>
 #include <allegro5/allegro_native_dialog.h>
 #include <math.h>
-#include "scene_menu_object.h"
+#include "scene_menu_object.hpp"
 #include "scene_settings.hpp"
 #include "scene_game.hpp"
 #include "scene_menu.hpp"
@@ -20,7 +20,7 @@ static int gameTitleH ;
 extern bool check_color;
 // [HACKATHON 3]
 // TARGET : use a clickable button to enter setting scene.
-// For `Button` struct(object) is defined in `scene_menu_object.h` and `scene_menu_object.c`
+// For `Button` struct(object) is defined in `scene_menu_object.hpp` and `scene_menu_object.c`
 // STRONGLY recommend you trace both of them first. 
 
 //	[HACKATHON 3-1]
@@ -65,7 +65,7 @@ void SceneMenu::draw() {
 		// [HACKATHON 3-3]
 		// TODO: Draw button
 		// Uncomment and fill the code below
-	drawButton(btnSettings);
+	btnSettings.draw();
 }
 
 void SceneMenu::on_mouse_move(int a, int mouse_x, int mouse_y, int f) {
@@ -120,7 +120,7 @@ SceneMenu::SceneMenu(void) : Scene() {
 	// [HACKATHON 3-2]
 	// TODO: Create button to settings
 	//	Uncomment and fill the code below
-	btnSettings = button_create(730, 20, 50, 50, "Assets/settings.png", "Assets/settings2.png");
+	btnSettings = Button(730, 20, 50, 50, "Assets/settings.png", "Assets/settings2.png");
 	gameTitle = load_bitmap("Assets/title.png");
 	gameTitleW = al_get_bitmap_width(gameTitle);
 	gameTitleH = al_get_bitmap_height(gameTitle);

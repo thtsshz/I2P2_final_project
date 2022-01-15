@@ -11,10 +11,10 @@
 #include "scene_game.h"
 #include "scene_menu.h"
 #include "scene_settings.h"
-#include "pacman_obj.h"
+#include "pacman_obj.hpp"
 #include "scene_end.h"
-#include "ghost.h"
-#include "map.h"
+#include "ghost.hpp"
+#include "map.hpp"
 // [HACKATHON 2-0]
 // Just modify the GHOST_NUM to 1
 #define GHOST_NUM 4
@@ -55,7 +55,7 @@ static void init(void) {
 	game_over = false;
 	game_main_Score = 0;
 	// create map
-	basic_map = create_map(NULL);
+	basic_map = new Map(nullptr);
 	font=al_load_ttf_font("Assets/pirulen.ttf", 24, 0);
 	// [TODO]
 	// Create map from .txt file and design your own map !!
@@ -243,7 +243,7 @@ static void draw(void) {
 	sprintf(str,"score:%d",game_main_Score);
 	al_draw_text(font, al_map_rgb(255, 255, 255), SCREEN_W / 2, 21,
             ALLEGRO_ALIGN_CENTER,str);
-	draw_map(basic_map);
+	basic_map->draw();
 
 	pman->draw();
 	if (game_over)
@@ -349,7 +349,7 @@ static void on_mouse_down(void) {
 static void render_init_screen(void) {
 	al_clear_to_color(al_map_rgb(0, 0, 0));
 
-	draw_map(basic_map);
+	basic_map->draw();
 	pman->draw();
 	for (int i = 0; i < GHOST_NUM; i++) {
 		ghosts[i]->draw();

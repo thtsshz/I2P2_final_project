@@ -1,6 +1,6 @@
 #include <allegro5/allegro_primitives.h>
-#include "pacman_obj.h"
-#include "map.h"
+#include "pacman_obj.hpp"
+#include "map.hpp"
 #include "game.h" 
 #include "shared.h"
  
@@ -59,7 +59,7 @@ bool Pacman::movable(Map *M, Directions targetDirec) {
 		// for none UP, DOWN, LEFT, RIGHT direction u should return false.
 			return false;
 	}
-	if (is_wall_block(M, x, y) || is_room_block(M, x, y))
+	if (M->is_wall_block(x, y) || M->is_room_block(x, y))
 		return false;
 	
 	return true;

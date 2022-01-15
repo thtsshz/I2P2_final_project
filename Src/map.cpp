@@ -3,7 +3,7 @@
 #include <stdio.h>
 #include <allegro5/allegro_primitives.h>
 #include "game.h"
-#include "map.h"
+#include "map.hpp"
 #define QUEUE_SIZE 3000
 
 /*global variables*/
@@ -13,11 +13,6 @@ const int map_offset_x = 25, map_offset_y = 50;			// pixel offset of where to st
 const int four_probe[4][2] = {{ 1, 0 }, { 0, 1 }, { -1,0 }, { 0, -1 }};
 ALLEGRO_BITMAP* all;
 /* Declare static function prototypes. */
-void draw_cherry(Map const* M, const int, const int);
-void draw_strawberry(Map const* M, const int, const int);
-static void draw_block_index(Map const* M, int row, int col);
-static void draw_bean(Map const* M, const int row, const int col);
-static void draw_power_bean(Map const* M, const int row, const int col);
 
 const char* nthu_map[] = {
 	"#####################################",
@@ -86,7 +81,7 @@ const char* default_map[] = {
 };
 
 
-Map* create_map(const char * filepath) {
+Map::Map(const char *filepath) {
 
 // [HACKATHON 0]
 // TODO: Read the map from "Assets/map_nthu.txt"
@@ -97,18 +92,13 @@ Map* create_map(const char * filepath) {
 // But we suggest you to finish this part if you have time since this is one of 
 // the grading part in Basic part in Final_Project_Rules.
 /* ----------------------------- start of default map code*/
-	Map* M = (Map*)malloc(sizeof(Map));
 	all = load_bitmap("Assets/pacman_tile.png"); 
 	FILE* pFile = NULL;
 	int n,m;
-	if (!M) {
-		game_abort("Error when creating Map");
-		return NULL;
-	}
 	if (filepath == NULL) {
-		M->row_num = 30;
-		M->col_num = 36;
-		game_log("Creating from default map. row = %d col = %d", M->row_num, M->col_num);
+		row_num = 30;
+		col_num = 36;
+		game_log("Creating from default map. row = %d col = %d", row_num, col_num);
 		
 	}
 	else {
@@ -117,30 +107,26 @@ Map* create_map(const char * filepath) {
 		// use pFile can fscanf do reading from file just like read from command line.
 		game_log("%s\n", filepath);
 		pFile = fopen("Assets/map_nthu.txt","r");
-		if (!pFile) {
+		if (!pFile)
 			game_abort("error to open map file\n");
-			return NULL;
-		}
-		if(fscanf(pFile,"%d %d",&n,&m) != 2) {
+		if(fscanf(pFile,"%d %d",&n,&m) != 2)
 			game_abort("Map format unmatched\n");
-			return NULL;
-		}
-		M->row_num=n;	
-		M->col_num=m;
+		row_num=n;	
+		col_num=m;
 		getc(pFile); // get the '\n'
 	}
 	/*
 	[TODO]
 	Allocate a 2-Dimension dynamic char array for recording Map 
 	*/
-	M->map = (char**)malloc(sizeof(char*) * M->row_num);
-//	if (!M->map) {
+	map = (char**)malloc(sizeof(char*) * row_num);
+//	if (!map) {
 //		game_abort(stderr, "map char array malloc error\n");
 //		return NULL;
 //	}
-	for (int i = 0; i < M->row_num; i++) {
-		M->map[i] = (char*)malloc(sizeof(char) * (M->col_num));
-//		if(!M->map[i]){
+	for (int i = 0; i < row_num; i++) {
+		map[i] = (char*)malloc(sizeof(char) * col_num);
+//		if(!map[i]){
 //			game_abort(stderr, "map char array malloc error\n");
 //			return NULL;
 //		}
@@ -153,26 +139,27 @@ Map* create_map(const char * filepath) {
 		'B' -> room of ghost
 		'P' -> Power Pellets
 	*/
-	M->wallnum = M->beansCount = 0;
-	for (int i = 0; i < M->row_num; i++) {
-		for (int j = 0; j < M->col_num; j++) {
+	wallnum = beansCount = 0;
+	for (int i = 0; i < row_num; i++) {
+		for (int j = 0; j < col_num; j++) {
 			if (filepath == NULL)
 			// [HACKATHON 0-1]
 			// You can just switch to nthu_map if you want to finish HACKATHON 0 later.
-			//	M->map[i][j] = default_map[i][j]; 
-				M->map[i][j] = nthu_map[i][j];
+			//	map[i][j] = default_map[i][j]; 
+				map[i][j] = nthu_map[i][j];
 			else{
 				// [HACKATHON 0-2]
 				// read the map from file just like read from default_map
-				fscanf(pFile," %c",&M->map[i][j]);
+				fscanf(pFile," %c",&map[i][j]);
 			}		
-			switch(M->map[i][j]) {
+			switch (map[i][j])
+			{
 			case '#':
-				M->wallnum++;
+				++wallnum;
 				break;
 			case '.':
 			case 'P':
-				M->beansCount++;
+				++beansCount;
 				break;
 			default:
 				break;
@@ -181,53 +168,45 @@ Map* create_map(const char * filepath) {
 		if(filepath != NULL)
 			getc(pFile);
 	}
-	M->beansNum = M->beansCount;
-	return M;
+	beansNum = beansCount;
 }
 
-void delete_map(Map* M) {
-	if (!M)
-		return;
+Map::~Map() {
 	// [TODO]
 	// you should free the dynamic allocated part of Map* M at here;
-	if(M->map){
-		for(int i=0;i<M->col_num;i++)
-			free(M->map[i]);
-		free(M->map);
+	if (map) {
+		for(int i = 0;i < col_num; i++)
+			free(map[i]);
+		free(map);
 	}
-	free(M);
 }
 
 
-void draw_map(Map const* M) {
-	if (M == NULL) {
-		game_abort("error map!\n");
-		return;
-	}
+void Map::draw() {
 	/*
 		[TODO]
-		draw the map according to M->map
+		draw the map according to map
 	*/
-	for (int row = 0; row < M->row_num; row++) {
-		for (int col = 0; col < M->col_num; col++) {
-			switch (M->map[row][col])
+	for (int row = 0; row < row_num; row++) {
+		for (int col = 0; col < col_num; col++) {
+			switch (map[row][col])
 			{
 				case '#':
-					draw_block_index(M, row, col);
+					draw_block_index(row, col);
 					break;
 				// [ TODO ]
 				// draw the power bean
 				case 'P':
-					draw_power_bean(M,row,col);
+					draw_power_bean(row, col);
 					break;
 				case '.':
-					draw_bean(M, row, col);
+					draw_bean(row, col);
 					break;
 				case 'F':
-					draw_cherry(M,row,col);
+					draw_cherry(row, col);
 					break;
 				case 'S':
-					draw_strawberry(M,row,col);
+					draw_strawberry(row, col);
 					break;
 				default:
 					break;
@@ -237,7 +216,7 @@ void draw_map(Map const* M) {
 	/*
 		for(...){
 			for(...)
-				switch(M->map[][])
+				switch(map[][])
 				{
 				case '#':
 					...
@@ -249,7 +228,7 @@ void draw_map(Map const* M) {
 		}
 	*/
 }
-void draw_cherry(Map const* M, const int row, const int col){
+void Map::draw_cherry(const int row, const int col) {
 	al_draw_scaled_bitmap(
 		all,
 		32, 48,
@@ -258,7 +237,7 @@ void draw_cherry(Map const* M, const int row, const int col){
 		20, 20, 0
 	);
 }
-void draw_strawberry(Map const* M, const int row, const int col){
+void Map::draw_strawberry(const int row, const int col) {
 	al_draw_scaled_bitmap(
 		all,
 		48, 48,
@@ -267,15 +246,15 @@ void draw_strawberry(Map const* M, const int row, const int col){
 		20, 20, 0
 	);
 }
-static void draw_block_index(Map const* M, const int row, const int col) {
-	bool U = is_wall_block(M, col, row - 1);
-	bool UR = is_wall_block(M, col + 1, row - 1);
-	bool UL = is_wall_block(M, col -1, row- 1);
-	bool B = is_wall_block(M, col, row+ 1);
-	bool BR = is_wall_block(M, col + 1, row + 1);
-	bool BL = is_wall_block(M, col - 1, row + 1);
-	bool R = is_wall_block(M, col + 1, row);
-	bool L = is_wall_block(M, col - 1,row);
+void Map::draw_block_index(const int row, const int col) {
+	bool U = is_wall_block(col, row - 1);
+	bool UR = is_wall_block(col + 1, row - 1);
+	bool UL = is_wall_block(col -1, row- 1);
+	bool B = is_wall_block(col, row+ 1);
+	bool BR = is_wall_block(col + 1, row + 1);
+	bool BL = is_wall_block(col - 1, row + 1);
+	bool R = is_wall_block(col + 1, row);
+	bool L = is_wall_block(col - 1,row);
 	if (!(U && UR && UL && B && BR && BL && R && L)) {
 	int s_x, s_y, e_x, e_y, dw;
 	int block_x = map_offset_x + block_width * col;
@@ -288,7 +267,7 @@ static void draw_block_index(Map const* M, const int row, const int col) {
 		//25 154 25//rand()%256,rand()%256,rand()%256
 		al_draw_filled_rectangle(s_x, s_y,
 			e_x, e_y, al_map_rgb(25, 154, 25));
-		if (row < M->row_num - 1 && B && !(BL && BR && R && L)) {
+		if (row < row_num - 1 && B && !(BL && BR && R && L)) {
 			s_x = block_x + dw;
 			s_y = block_y + dw;
 			e_x = s_x + dw;
@@ -304,7 +283,7 @@ static void draw_block_index(Map const* M, const int row, const int col) {
 			al_draw_filled_rectangle(s_x, s_y,
 				e_x, e_y, al_map_rgb(25,154 ,25));
 		}
-		if (col < M->col_num - 1 && R && !(UR && BR && U && B)) {
+		if (col < col_num - 1 && R && !(UR && BR && U && B)) {
 			s_x = block_x + dw;
 			s_y = block_y + dw;
 			e_x = block_x + block_width;
@@ -324,28 +303,28 @@ static void draw_block_index(Map const* M, const int row, const int col) {
 	}
 }
 
-static void draw_bean(Map const* M, const int row, const int col) {
+void Map::draw_bean(const int row, const int col) {
 	al_draw_filled_circle(map_offset_x + col * block_width + block_width / 2.0, map_offset_y + row * block_height + block_height / 2.0, block_width/6.0,  al_map_rgb(234, 38, 38));
 }
 
-static void draw_power_bean(Map const* M, const int row, const int col) {
+void Map::draw_power_bean(const int row, const int col) {
 	al_draw_filled_circle(map_offset_x + col * block_width + block_width / 2.0, map_offset_y + row * block_height + block_height / 2.0, block_width / 3.0, al_map_rgb(234, 178, 38));
 }
 
 
-bool is_wall_block(Map const* M, int index_x, int index_y) {
-	if (index_x < 0 || index_x >= M->col_num || index_y < 0 || index_y >= M->row_num)
+bool Map::is_wall_block(int index_x, int index_y) {
+	if (index_x < 0 || index_x >= col_num || index_y < 0 || index_y >= row_num)
 		return true;
-	return M->map[index_y][index_x] == '#';
+	return map[index_y][index_x] == '#';
 }
-bool is_room_block(Map const* M, int index_x, int index_y) {
-	if (index_x < 0 || index_x >= M->col_num || index_y < 0 || index_y >= M->row_num)
+bool Map::is_room_block(int index_x, int index_y) {
+	if (index_x < 0 || index_x >= col_num || index_y < 0 || index_y >= row_num)
 		return true;
-	return M->map[index_y][index_x] == 'B';
+	return map[index_y][index_x] == 'B';
 }
 
 
-Directions shortest_path_direc(Map * M, int startGridx, int startGridy, int endGridx, int endGridy) {
+Directions Map::shortest_path_direc(int startGridx, int startGridy, int endGridx, int endGridy) {
 	// [NOTODO]
 	// Here is a complete function return the next direction of the shorstest path.
 	// Given Map, start point and end point.
@@ -372,7 +351,7 @@ static	uint16_t end;
 	for (size_t i = 0; i < 4; i++) {
 		int8_t x = queue_x[front] + four_probe[i][0];
 		int8_t y = queue_y[front] + four_probe[i][1];
-		if (is_wall_block(M, x, y) || (int)steped[y][x])
+		if (is_wall_block(x, y) || (int)steped[y][x])
 			continue;
 		queue_x[end] = x;
 		queue_y[end] = y;
@@ -401,7 +380,7 @@ static	uint16_t end;
 		for (size_t i = 0; i < 4; i++) {
 			int8_t x = queue_x[front] + four_probe[i][0];
 			int8_t y = queue_y[front] + four_probe[i][1];
-			if (is_wall_block(M, x, y) || (int)steped[y][x])
+			if (is_wall_block(x, y) || (int)steped[y][x])
 				continue;
 			queue_x[end] = x;
 			queue_y[end] = y;

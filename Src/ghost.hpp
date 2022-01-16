@@ -22,14 +22,6 @@ typedef enum class GhostStatus{
 	FLEE							 // pacman powered up
 } GhostStatus;
 
-typedef enum class GhostType{
-	Blinky,
-	Pinky,
-	Inky,
-	Clyde
-} GhostType;
-
-
 class Ghost
 {
 private:

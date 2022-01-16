@@ -31,10 +31,10 @@ static int check=0;
 // part, you will have more understanding on whole mechanism.
 static const int basic_speed = 2;
 
-Ghost::Ghost(GhostType flag) {
+Ghost::Ghost()
+{
 
 	// NOTODO
-	typeFlag = flag;
 	objData.Size.x = block_width;
 	objData.Size.y = block_height;
 
@@ -46,33 +46,8 @@ Ghost::Ghost(GhostType flag) {
 	dead_sprite = load_bitmap("Assets/ghost_dead.png");
 
 	previous_timer_val=0;
-	
-	switch (typeFlag) {
-	case GhostType::Blinky:
-		objData.Coord.x = cage_grid_x;
-		objData.Coord.y = cage_grid_y;
-		move_sprite = load_bitmap("Assets/ghost_move_red.png");
-		move_script = &Ghost::red_move_script;
-		break;
-	case GhostType::Pinky:
-		objData.Coord.x = cage_grid_x;
-		objData.Coord.y = cage_grid_y;
-		move_sprite = load_bitmap("Assets/ghost_move_pink.png");
-		move_script = &Ghost::red_move_script;
-		break;
-	case GhostType::Inky:
-		objData.Coord.x = cage_grid_x;
-		objData.Coord.y = cage_grid_y;
-		move_sprite = load_bitmap("Assets/ghost_move_blue.png");
-		move_script = &Ghost::red_move_script;
-		break;
-	default:
-		objData.Coord.x = cage_grid_x;
-		objData.Coord.y = cage_grid_y;
-		move_sprite = load_bitmap("Assets/ghost_move_orange.png");
-		move_script = &Ghost::red_move_script;
-		break;
-	}
+	objData.Coord.x = cage_grid_x;
+	objData.Coord.y = cage_grid_y;
 }
 Ghost::~Ghost(){
 	al_destroy_bitmap(dead_sprite);
@@ -430,4 +405,24 @@ void Ghost::move(Map *M) {
 	}
 	objData.facing = objData.preMove;
 	objData.moveCD = GAME_TICK_CD;
+}
+
+GhostRed::GhostRed() : Ghost()
+{
+	move_sprite = load_bitmap("Assets/ghost_move_red.png");
+}
+
+GhostPink::GhostPink() : Ghost()
+{
+	move_sprite = load_bitmap("Assets/ghost_move_pink.png");
+}
+
+GhostBlue::GhostBlue() : Ghost()
+{
+	move_sprite = load_bitmap("Assets/ghost_move_blue.png");
+}
+
+GhostOrange::GhostOrange() : Ghost()
+{
+	move_sprite = load_bitmap("Assets/ghost_move_orange.png");
 }

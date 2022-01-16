@@ -34,48 +34,66 @@ class Ghost
 {
 private:
 	bitmapdata imgdata;
-	GhostType typeFlag;
-	ALLEGRO_BITMAP* move_sprite;
 	ALLEGRO_BITMAP* flee_sprite;
 	ALLEGRO_BITMAP* dead_sprite;
-
+protected:
+	ALLEGRO_BITMAP* move_sprite;
 public:
 	object objData;
 	int speed;
 	int64_t previous_timer_val;
 	GhostStatus status;
-	script_func_ptr move_script;
-	Ghost(GhostType);
+	Ghost();
 	~Ghost();
 	void draw();
 	void move(Map *);
-	void NextMove(Directions next);
+	void NextMove(Directions);
 	void printGhostStatus(GhostStatus);
-	bool movable(Map* M, Directions targetDirec, bool room);
-	void toggle_FLEE(bool setFLEE);
+	bool movable(Map *, Directions, bool);
+	void toggle_FLEE(bool);
 	void collided();
-	void move_script_GO_IN(Map* M);
-	void move_script_GO_OUT(Map* M);
-	void move_script_FLEE(Map* M, const Pacman * const pacman);
-	void red_move_script(Map* M, Pacman* pacman);
-	void red_move_script_FREEDOM(Map* M,Pacman* pacman);
-	void red_move_script_BLOCKED(Map* M);
+	void move_script_GO_IN(Map *);
+	void move_script_GO_OUT(Map *);
+	void move_script_FLEE(Map *, const Pacman * const);
+	virtual void move_script(Map *, Pacman *) {}
+	virtual void move_script_FREEDOM(Map *, Pacman *) {}
+	virtual void move_script_BLOCKED(Map *) {}
 };
 
-//Ghost* ghost_create(int flag);
-//void ghost_destory(Ghost* ghost);
-//void ghost_draw(Ghost* ghost);
-//void ghost_NextMove(Ghost* ghost, Directions next);
-//void printGhostStatus(GhostStatus);
-//bool ghost_movable(Ghost* ghost, Map* M, Directions targetDirec, bool room);
-///* check if the direction is ok to move_script in; if room = true, then room will be treat as not able to move_script in */
-//
-//
-//void ghost_toggle_FLEE(Ghost* ghosts, bool setFLEE);
-//void ghost_collided(Ghost* ghost);
-//void ghost_move_script_GO_IN(Ghost* ghost, Map* M);
-//void ghost_move_script_GO_OUT(Ghost* ghost, Map* M);
-//void ghost_move_script_FLEE(Ghost* ghost, Map* M, const Pacman * const pacman);
-//
-//void ghost_red_move_script(Ghost* ghost, Map* M, Pacman* pacman);
+class GhostRed : public Ghost
+{
+public:
+	GhostRed();
+	void move_script(Map *, Pacman *);
+	void move_script_FREEDOM(Map *, Pacman *);
+	void move_script_BLOCKED(Map *);
+};
+
+class GhostPink : public Ghost
+{
+public:
+	GhostPink();
+	void move_script(Map *, Pacman *);
+	void move_script_FREEDOM(Map *, Pacman *);
+	void move_script_BLOCKED(Map *);
+};
+
+class GhostBlue : public Ghost
+{
+public:
+	GhostBlue();
+	void move_script(Map *, Pacman *);
+	void move_script_FREEDOM(Map *, Pacman *);
+	void move_script_BLOCKED(Map *);
+};
+
+class GhostOrange : public Ghost
+{
+public:
+	GhostOrange();
+	void move_script(Map *, Pacman *);
+	void move_script_FREEDOM(Map *, Pacman *);
+	void move_script_BLOCKED(Map *);
+};
+
 #endif

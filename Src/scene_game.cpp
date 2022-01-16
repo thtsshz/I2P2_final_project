@@ -171,7 +171,7 @@ void SceneMain::update(void) {
 	if (multiPlayer)
 		ghosts[0]->move(basic_map);
 	for (int i = multiPlayer; i < GHOST_NUM; i++) 
-		(ghosts[i]->*(ghosts[i]->move_script))(basic_map, pman);
+		ghosts[i]->move_script(basic_map, pman);
 }
 
 void SceneMain::draw(void) {
@@ -192,7 +192,8 @@ void SceneMain::draw(void) {
 		return;
 	// no drawing below when game over
 	for (int i = 0; i < GHOST_NUM; i++)
-		ghosts[i]->draw();
+		if (ghosts[i])
+			ghosts[i]->draw();
 	
 	//debugging mode
 	if (debug_mode) {
@@ -310,9 +311,9 @@ void SceneMain::render_init_screen(void) {
 
 	basic_map->draw();
 	pman->draw();
-	for (int i = 0; i < GHOST_NUM; i++) {
-		ghosts[i]->draw();
-	}
+	for (int i = 0; i < GHOST_NUM; i++)
+		if (ghosts[i])
+			ghosts[i]->draw();
 
 	al_draw_text(
 		menuFont,
@@ -361,13 +362,13 @@ SceneMain::SceneMain(void) : Scene() {
 		for (int i = 0; i < GHOST_NUM; i++) {
 			game_log("creating ghost %d\n", i);
 			if(!i) 
-				ghosts[i] = new Ghost(GhostType::Blinky); 
+				ghosts[i] = new GhostRed(); 
 			else if(i==1)
-				ghosts[i] = new Ghost(GhostType::Pinky);
+				ghosts[i] = new GhostPink();
 			else if(i==2)
-				ghosts[i] = new Ghost(GhostType::Inky);
+				ghosts[i] = new GhostBlue();
 			else
-				ghosts[i] = new Ghost(GhostType::Clyde);
+				ghosts[i] = new GhostOrange();
 			if (!ghosts[i])
 				game_abort("error creating ghost\n");
 		}

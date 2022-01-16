@@ -157,8 +157,10 @@ void GhostRed::move_script(Map *M, Pacman *pacman)
 	case GhostStatus::BLOCKED:
 		move_script_BLOCKED(M);
 		//			printf("NOTICE:%d\n",al_get_timer_count(game_tick_timer)-ghost->previous_timer_val);
-		if (!previous_timer_val && al_get_timer_count(game_tick_timer) > 0)
-			status = GhostStatus::GO_OUT;
+		if(!previous_timer_val){
+			if(al_get_timer_count(game_tick_timer) > 0)
+				status = GhostStatus::GO_OUT;
+		} 
 		else
 		{
 			if (al_get_timer_count(game_tick_timer) - previous_timer_val > GO_OUT_TIME * 2)
@@ -288,10 +290,14 @@ void GhostPink::move_script(Map *M, Pacman *pacman)
 	{
 	case GhostStatus::BLOCKED:
 		move_script_BLOCKED(M);
-		if (!previous_timer_val && al_get_timer_count(game_tick_timer) > GO_OUT_TIME)
+		if (!previous_timer_val){
+			if(al_get_timer_count(game_tick_timer) > GO_OUT_TIME)
+				status = GhostStatus::GO_OUT;
+		}
+		else{
+			if (al_get_timer_count(game_tick_timer) - previous_timer_val > GO_OUT_TIME << 1)
 			status = GhostStatus::GO_OUT;
-		else if (al_get_timer_count(game_tick_timer) - previous_timer_val > GO_OUT_TIME << 1)
-			status = GhostStatus::GO_OUT;
+		} 
 		break;
 	case GhostStatus::FREEDOM:
 		move_script_FREEDOM(M, pacman);
@@ -405,10 +411,14 @@ void GhostBlue::move_script(Map *M, Pacman *pacman)
 	{
 	case GhostStatus::BLOCKED:
 		move_script_BLOCKED(M);
-		if (!previous_timer_val && al_get_timer_count(game_tick_timer) > GO_OUT_TIME * 3)
-			status = GhostStatus::GO_OUT;
-		else if (al_get_timer_count(game_tick_timer) - previous_timer_val > GO_OUT_TIME << 1)
-			status = GhostStatus::GO_OUT;
+		if (!previous_timer_val ){
+			if(al_get_timer_count(game_tick_timer) > GO_OUT_TIME * 3)
+				status = GhostStatus::GO_OUT;
+		}	
+		else{
+			if (al_get_timer_count(game_tick_timer) - previous_timer_val > GO_OUT_TIME << 1)
+				status = GhostStatus::GO_OUT;
+		} 
 		break;
 	case GhostStatus::FREEDOM:
 		move_script_FREEDOM(M, pacman);
@@ -568,10 +578,15 @@ void GhostOrange::move_script(Map *M, Pacman *pacman)
 	{
 	case GhostStatus::BLOCKED:
 		move_script_BLOCKED(M);
-		if (!previous_timer_val && al_get_timer_count(game_tick_timer) > GO_OUT_TIME * 5)
-			status = GhostStatus::GO_OUT;
-		else if (al_get_timer_count(game_tick_timer) - previous_timer_val > GO_OUT_TIME << 1)
-			status = GhostStatus::GO_OUT;
+		if (!previous_timer_val ){
+			if(al_get_timer_count(game_tick_timer) > GO_OUT_TIME * 5){
+				status = GhostStatus::GO_OUT;
+			}
+		}
+		else{
+			if (al_get_timer_count(game_tick_timer) - previous_timer_val > GO_OUT_TIME << 1)
+				status = GhostStatus::GO_OUT;
+		} 
 		break;
 	case GhostStatus::FREEDOM:
 		move_script_FREEDOM(M, pacman);

@@ -168,7 +168,9 @@ void SceneMain::update(void) {
 	checkItem();
 	status_update();
 	pman->move(basic_map);
-	for (int i = 0; i < GHOST_NUM; i++) 
+	if (multiPlayer)
+		ghosts[0]->move(basic_map);
+	for (int i = multiPlayer; i < GHOST_NUM; i++) 
 		(ghosts[i]->*(ghosts[i]->move_script))(basic_map, pman);
 }
 
@@ -265,6 +267,22 @@ void SceneMain::on_key_down(int key_code) {
 			break;
 		case ALLEGRO_KEY_D:
 			pman->NextMove(Directions::RIGHT);
+			break;
+		case ALLEGRO_KEY_UP:
+			if (multiPlayer)
+				ghosts[0]->NextMove(Directions::UP);
+			break;
+		case ALLEGRO_KEY_LEFT:
+			if (multiPlayer)
+				ghosts[0]->NextMove(Directions::LEFT);
+			break;
+		case ALLEGRO_KEY_DOWN:
+			if (multiPlayer)
+				ghosts[0]->NextMove(Directions::DOWN);
+			break;
+		case ALLEGRO_KEY_RIGHT:
+			if (multiPlayer)
+				ghosts[0]->NextMove(Directions::RIGHT);
 			break;
 		case ALLEGRO_KEY_C:
 			cheat_mode = !cheat_mode;
@@ -365,4 +383,7 @@ SceneMain::SceneMain(void) : Scene() {
 	//scene.on_mouse_down = &on_mouse_down;
 	// TODO: Register more event callback functions such as keyboard, mouse, ...
 	game_log("Start scene created");
+
+	if (multiPlayer)
+		ghosts[0]->status = GhostStatus::FREEDOM;
 }

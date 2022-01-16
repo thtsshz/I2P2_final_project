@@ -396,3 +396,38 @@ void Ghost::move_script_FLEE(Map* M, const Pacman * const pacman) {
 	NextMove((Directions)inv2((int)objData.preMove));
 }
 
+void Ghost::move(Map *M) {
+	if (!movetime(speed))
+		return;
+	// if (game_over)
+	// 	return;
+	int probe_x = objData.Coord.x, probe_y = objData.Coord.y;
+	if (movable(M, objData.nextTryMove, false)) 
+		objData.preMove = objData.nextTryMove;
+	else if (!movable(M, objData.preMove, false)) 
+		return;
+//	printf("MOVE DIRECTION%d\n",objData.preMove);
+	switch (objData.preMove)
+	{
+	case Directions::UP:
+		objData.Coord.y -= 1;
+		objData.preMove = Directions::UP;
+		break;
+	case Directions::DOWN:
+		objData.Coord.y += 1;
+		objData.preMove = Directions::DOWN;
+		break;
+	case Directions::LEFT:
+		objData.Coord.x -= 1;
+		objData.preMove = Directions::LEFT;
+		break;
+	case Directions::RIGHT:
+		objData.Coord.x += 1;
+		objData.preMove = Directions::RIGHT;
+		break;
+	default:
+		break;
+	}
+	objData.facing = objData.preMove;
+	objData.moveCD = GAME_TICK_CD;
+}

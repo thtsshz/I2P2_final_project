@@ -29,6 +29,7 @@ extern bool gameDone;
 extern bool check_color;
 extern bool back;
 extern bool tran;
+extern bool multiPlayer;
 // Initialize shared variables and resources.
 // Allows the game to perform any initialization it needs before
 // starting to run.

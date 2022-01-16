@@ -13,6 +13,8 @@
 #include "scene_game.hpp"
 #include "scene_menu.hpp"
 #include "shared.h"
+#include <string>
+using namespace std;
 ALLEGRO_SAMPLE_ID menuBGM;
 // Variables and functions with 'static' prefix at the top level of a
 // source file is only accessible in that file ("file scope", also
@@ -33,13 +35,9 @@ void SceneSetting::draw() {
     al_draw_text(small_font, al_map_rgb(0, 0, 0), SCREEN_W / 2, 300,
              ALLEGRO_ALIGN_CENTER, ("PRESS \"UP\"and\"DOWN\" to adjust volume (Now: " + to_string(int(music_volume * 10)) + ')').c_str());
     al_draw_text(small_font, al_map_rgb(0, 0, 0), SCREEN_W / 2, 450,
-             ALLEGRO_ALIGN_CENTER, ("PRESS \"TAB\" to toggle multiplayer mode (Now: " + string(multiPlayer ? "On" : "Off")).c_str());
-    al_draw_text(font, al_map_rgb(0, 0, 0), SCREEN_W / 2, 600,
+             ALLEGRO_ALIGN_CENTER, ("PRESS \"TAB\" to toggle multiplayer mode (Now: " + string(multiPlayer ? "On" : "Off") + ')').c_str());
+	al_draw_text(font, al_map_rgb(0, 0, 0), SCREEN_W / 2, 600,
              ALLEGRO_ALIGN_CENTER,"PRESS \"SPACE\"");
-}
-
-int max(int a,int b){
-	return (a>b)?a:b; 
 }
 
 void SceneSetting::on_key_down(int keycode) {
@@ -57,14 +55,15 @@ void SceneSetting::on_key_down(int keycode) {
 			music_volume = max(music_volume, .0f);
 			effect_volume = max(effect_volume, .0f);
 			break;
-		default:
+		case ALLEGRO_KEY_TAB:
+			multiPlayer ^= 1; 
 			break;
 	}
 }
 // The only function that is shared across files.
 SceneSetting::SceneSetting() {
 	font=al_load_ttf_font("Assets/pirulen.ttf", 48, 0);
-	small_font=al_load_ttf_font("Assets/pirulen.ttf", 24, 0);
+	small_font = al_load_ttf_font("Assets/pirulen.ttf", 18, 0);
 	name = strdup("Settings");
 	game_log("Settings scene created");
 	// TODO: Register more event callback functions such as keyboard, mouse, ...

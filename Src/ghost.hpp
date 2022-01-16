@@ -48,6 +48,7 @@ public:
 	Ghost(GhostType);
 	~Ghost();
 	void draw();
+	void move(Map *);
 	void NextMove(Directions next);
 	void printGhostStatus(GhostStatus);
 	bool movable(Map* M, Directions targetDirec, bool room);

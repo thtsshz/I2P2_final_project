@@ -8,6 +8,7 @@
 //extern uint32_t GAME_TICK_CD;
 extern uint32_t GAME_TICK;
 extern ALLEGRO_TIMER *game_tick_timer;
+extern Ghost** ghosts;
 extern const int cage_grid_x, cage_grid_y; //22 11
 /* Declare static function prototypes */
 Directions inv(Directions dir)
@@ -250,78 +251,11 @@ void GhostPink::move_script_FREEDOM(Map *M, Pacman *pacman)
 				break;
 		}
 	}
-	int x_dif = objData.Coord.x - new_x, y_dif = objData.Coord.y - new_y;
-	if (abs(x_dif) > abs(y_dif))
-	{
-		if (x_dif > 0)
-		{
-			for (i = 0; i < cnt; i++)
-				if (proba[i] == Directions::LEFT)
-				{
-					NextMove(Directions::LEFT);
-					return;
-				}
-		}
-		else
-			for (i = 0; i < cnt; i++)
-				if (proba[i] == Directions::RIGHT)
-				{
-					NextMove(Directions::RIGHT);
-					return;
-				}
-	}
+	Directions dir=M->shortest_path_direc(objData.Coord.x,objData.Coord.y,new_x,new_y);
+	if(movable(M,dir,1))
+		NextMove(dir);
 	else
-	{
-		if (y_dif > 0)
-		{
-			for (i = 0; i < cnt; i++)
-				if (proba[i] == Directions::UP)
-				{
-					NextMove(Directions::UP);
-					return;
-				}
-		}
-		else
-			for (i = 0; i < cnt; i++)
-				if (proba[i] == Directions::DOWN)
-				{
-					NextMove(Directions::DOWN);
-					return;
-				}
-	}
-	if (x_dif > 0)
-	{
-		for (i = 0; i < cnt; i++)
-			if (proba[i] == Directions::LEFT)
-			{
-				NextMove(Directions::LEFT);
-				return;
-			}
-	}
-	else
-		for (i = 0; i < cnt; i++)
-			if (proba[i] == Directions::RIGHT)
-			{
-				NextMove(Directions::RIGHT);
-				return;
-			}
-	if (y_dif > 0)
-	{
-		for (i = 0; i < cnt; i++)
-			if (proba[i] == Directions::UP)
-			{
-				NextMove(Directions::UP);
-				return;
-			}
-	}
-	else
-		for (i = 0; i < cnt; i++)
-			if (proba[i] == Directions::DOWN)
-			{
-				NextMove(Directions::DOWN);
-				return;
-			}
-	NextMove(proba[rand() % cnt]);
+		NextMove(proba[rand()%cnt]);
 }
 
 void GhostPink::move_script_BLOCKED(Map *M)
@@ -413,78 +347,32 @@ void GhostBlue::move_script_FREEDOM(Map *M, Pacman *pacman)
 		NextMove(inv(objData.preMove));
 		return;
 	}
-	int x_dif = objData.Coord.x - pacman->objData.Coord.x, y_dif = objData.Coord.y - pacman->objData.Coord.y;
-	if (abs(x_dif) > abs(y_dif))
-	{
-		if (x_dif > 0)
-		{
-			for (i = 0; i < cnt; i++)
-				if (proba[i] == Directions::LEFT)
-				{
-					NextMove(Directions::LEFT);
-					return;
-				}
+	int new_x=pacman->objData.Coord.x,new_y=pacman->objData.Coord.y;
+	for(int i=1;i<=2;i++){
+		switch(pacman->objData.facing){
+			case Directions::UP:
+				if(!M->is_wall_block(new_x,new_y-1)&&!M->is_room_block(new_x,new_y-1))
+					new_y--;
+				break;
+			case Directions::DOWN:
+				if(!M->is_wall_block(new_x,new_y+1)&&!M->is_room_block(new_x,new_y+1))
+					new_y++;
+				break;
+			case Directions::LEFT:
+				if(!M->is_wall_block(new_x-1,new_y)&&!M->is_room_block(new_x-1,new_y))
+					new_x--;
+				break;
+			case Directions::RIGHT:
+				if(!M->is_wall_block(new_x+1,new_y)&&!M->is_room_block(new_x+1,new_y))
+					new_x++;
+				break;
 		}
-		else
-			for (i = 0; i < cnt; i++)
-				if (proba[i] == Directions::RIGHT)
-				{
-					NextMove(Directions::RIGHT);
-					return;
-				}
 	}
+	Directions dir= M->shortest_path_direc(objData.Coord.x,objData.Coord.y,objData.Coord.x+2*(new_x-ghosts[0]->objData.Coord.x),objData.Coord.y+2*(new_y-ghosts[0]->objData.Coord.y));
+	if(movable(M,dir,1))
+		NextMove(dir);
 	else
-	{
-		if (y_dif > 0)
-		{
-			for (i = 0; i < cnt; i++)
-				if (proba[i] == Directions::UP)
-				{
-					NextMove(Directions::UP);
-					return;
-				}
-		}
-		else
-			for (i = 0; i < cnt; i++)
-				if (proba[i] == Directions::DOWN)
-				{
-					NextMove(Directions::DOWN);
-					return;
-				}
-	}
-	if (x_dif > 0)
-	{
-		for (i = 0; i < cnt; i++)
-			if (proba[i] == Directions::LEFT)
-			{
-				NextMove(Directions::LEFT);
-				return;
-			}
-	}
-	else
-		for (i = 0; i < cnt; i++)
-			if (proba[i] == Directions::RIGHT)
-			{
-				NextMove(Directions::RIGHT);
-				return;
-			}
-	if (y_dif > 0)
-	{
-		for (i = 0; i < cnt; i++)
-			if (proba[i] == Directions::UP)
-			{
-				NextMove(Directions::UP);
-				return;
-			}
-	}
-	else
-		for (i = 0; i < cnt; i++)
-			if (proba[i] == Directions::DOWN)
-			{
-				NextMove(Directions::DOWN);
-				return;
-			}
-	NextMove(proba[rand() % cnt]);
+		NextMove(proba[rand()%cnt]);
 }
 
 void GhostBlue::move_script_BLOCKED(Map *M)

@@ -5,12 +5,11 @@
 #define SCENE_SHARED_H
 #include <allegro5/allegro_font.h>
 #include <allegro5/allegro_audio.h>
-
+#include "ghost.hpp"
 // TODO: Shared constant variable (without initializing value).
 
 // TODO: More shared resources or data that needed to be accessed
-// across different scenes. initialize the value in 'shared.c'.;
-;
+// across different scenes. initialize the value in 'shared.c'.
 extern ALLEGRO_FONT* font_pirulen_32;
 extern ALLEGRO_FONT* font_pirulen_24;
 extern ALLEGRO_SAMPLE* themeMusic;
@@ -30,6 +29,7 @@ extern bool check_color;
 extern bool back;
 extern bool tran;
 extern bool multiPlayer;
+extern Ghost** ghosts;
 // Initialize shared variables and resources.
 // Allows the game to perform any initialization it needs before
 // starting to run.

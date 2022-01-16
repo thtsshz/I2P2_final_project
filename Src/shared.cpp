@@ -15,6 +15,7 @@ ALLEGRO_SAMPLE* PACMAN_DEATH_SOUND = NULL;
 ALLEGRO_TIMER* power_up_timer= NULL;
 ALLEGRO_FONT* menuFont = NULL;
 ALLEGRO_TIMER* game_tick_timer = NULL;
+Ghost** ghosts=NULL;
 int score[50]={0};
 int score_size=0;
 bool check_color=0;

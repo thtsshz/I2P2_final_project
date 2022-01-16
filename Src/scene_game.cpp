@@ -32,7 +32,7 @@ bool game_over = false;
 static const int power_up_duration = 10;
 static Pacman* pman;
 static Map* basic_map;
-static Ghost** ghosts;
+extern Ghost** ghosts;
 extern ALLEGRO_FONT* font;
 bool debug_mode = false;
 bool cheat_mode = false;

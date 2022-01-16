@@ -31,7 +31,9 @@ void SceneSetting::draw() {
 	al_draw_text(font, al_map_rgb(0, 0, 0), SCREEN_W / 2, 30,
              ALLEGRO_ALIGN_CENTER,"Settings");
     al_draw_text(small_font, al_map_rgb(0, 0, 0), SCREEN_W / 2, 300,
-             ALLEGRO_ALIGN_CENTER,"PRESS \"UP\"and\"DOWN\"to adjust volume");
+             ALLEGRO_ALIGN_CENTER, ("PRESS \"UP\"and\"DOWN\" to adjust volume (Now: " + to_string(int(music_volume * 10)) + ')').c_str());
+    al_draw_text(small_font, al_map_rgb(0, 0, 0), SCREEN_W / 2, 450,
+             ALLEGRO_ALIGN_CENTER, ("PRESS \"TAB\" to toggle multiplayer mode (Now: " + string(multiPlayer ? "On" : "Off")).c_str());
     al_draw_text(font, al_map_rgb(0, 0, 0), SCREEN_W / 2, 600,
              ALLEGRO_ALIGN_CENTER,"PRESS \"SPACE\"");
 }
@@ -52,8 +54,8 @@ void SceneSetting::on_key_down(int keycode) {
 		case ALLEGRO_KEY_DOWN:
 			music_volume-=0.1;
 			effect_volume-=0.1;
-			music_volume=max(music_volume,0);
-			effect_volume=max(effect_volume,0);
+			music_volume = max(music_volume, .0f);
+			effect_volume = max(effect_volume, .0f);
 			break;
 		default:
 			break;

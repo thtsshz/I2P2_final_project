@@ -229,7 +229,28 @@ void GhostPink::move_script_FREEDOM(Map *M, Pacman *pacman)
 		NextMove(inv(objData.preMove));
 		return;
 	}
-	int x_dif = objData.Coord.x - pacman->objData.Coord.x, y_dif = objData.Coord.y - pacman->objData.Coord.y;
+	int new_x=pacman->objData.Coord.x,new_y=pacman->objData.Coord.y;
+	for(int i=1;i<=4;i++){
+		switch(pacman->objData.facing){
+			case Directions::UP:
+				if(!M->is_wall_block(new_x,new_y-1)&&!M->is_room_block(new_x,new_y-1))
+					new_y--;
+				break;
+			case Directions::DOWN:
+				if(!M->is_wall_block(new_x,new_y+1)&&!M->is_room_block(new_x,new_y+1))
+					new_y++;
+				break;
+			case Directions::LEFT:
+				if(!M->is_wall_block(new_x-1,new_y)&&!M->is_room_block(new_x-1,new_y))
+					new_x--;
+				break;
+			case Directions::RIGHT:
+				if(!M->is_wall_block(new_x+1,new_y)&&!M->is_room_block(new_x+1,new_y))
+					new_x++;
+				break;
+		}
+	}
+	int x_dif = objData.Coord.x - new_x, y_dif = objData.Coord.y - new_y;
 	if (abs(x_dif) > abs(y_dif))
 	{
 		if (x_dif > 0)

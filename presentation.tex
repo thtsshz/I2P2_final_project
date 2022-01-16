@@ -1,0 +1,237 @@
+\documentclass{beamer}
+
+\usepackage{beamerthemesplit} % // Activate for custom appearance
+
+\usepackage{xeCJK}
+\usepackage{graphicx}
+\usepackage{subcaption}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\usepackage{algpseudocode}
+\usepackage{listings}
+\usepackage{pgf-umlcd}
+
+\lstset
+{
+  breaklines=true,
+  breakatwhitespace=true,
+}
+
+\definecolor{nthu}{HTML}{7F1084}
+\definecolor{secondary}{HTML}{910A17}
+\definecolor{accent}{HTML}{410A91}
+%\definecolor{bg}{HTML}{171717}
+
+%\setbeamercolor{normal text}{fg=white, bg=bg}
+\setbeamercolor{alerted text}{fg=secondary}
+\setbeamercolor{example text}{fg=accent}
+\setbeamercolor{background}{parent=normal text}
+\setbeamercolor{background canvas}{parent=background}
+\setbeamercolor{palette primary}{fg=white, bg=secondary}
+\setbeamercolor{palette secondary}{use=structure, fg=white, bg=nthu}
+\setbeamercolor{palette tertiary}{use=structure, fg=white, bg=accent}
+\setbeamercolor{block title}{fg=white, bg=nthu!69!accent}
+\setbeamercolor{block body}{fg=white, bg=accent!69!nthu}
+\setbeamercolor{titlelike}{fg=white, bg=nthu}
+\setbeamercolor{structure}{fg=nthu!64}
+\usebeamercolor{structure}
+%\usecolortheme[named=nthu]{structure}
+\useinnertheme{rounded}
+\useoutertheme{infolines}
+\usefonttheme{serif}
+
+\xeCJKsetup{CJKglue=\hspace{0pt plus .12 \baselineskip }}
+\xeCJKsetup{RubberPunctSkip=false}
+\xeCJKsetup{PunctStyle=plain}
+\xeCJKsetup{CheckSingle=true}
+\XeTeXlinebreaklocale "zh"
+\XeTeXlinebreakskip = 0pt plus 2pt
+
+\setCJKmainfont{Songti TC}
+\setCJKsansfont{Apple LiGothic}
+\setmonofont{Cascadia Code PL}
+
+\title{Final Project Demo}
+\subtitle{\scshape Introduction to Programming II}
+\author{林榮翼 \& 翁君牧}
+\institute{第 11 組}
+\date{\today}
+
+\begin{document}
+
+\begin{frame}
+\maketitle
+\end{frame}
+
+\begin{frame}{List of Classes}
+\ttfamily
+\begin{itemize}
+\item Map
+\begin{itemize}
+\item\textit{enum} Directions
+\end{itemize} 
+\item Pacman
+\item Ghost
+\begin{itemize}
+\item\textit{enum} GhostStatus
+\item GhostRed
+\item GhostBlue
+\item GhostPink
+\item GhostOrange
+\end{itemize} 
+\item Scene
+\begin{itemize}
+\item SceneMenu
+\begin{itemize}
+\item Button
+\end{itemize} 
+\item SceneSetting
+\item SceneMain
+\item SceneEnd
+\end{itemize} 
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\centering\footnotesize
+\begin{tikzpicture}
+\begin{class}[text width=.69\textwidth]{Map}{0,0}
+\attribute{- wallnum : int}
+\attribute{- beansCcount : int}
+\attribute{+ row\_num : int}
+\attribute{+ col\_num : int}
+\attribute{+ beansNum : int}
+\attribute{+ map : char **}
+\operation{- draw\_cherry(int, int) : void}
+\operation{- draw\_strawberry(int, int) : void}
+\operation{- draw\_block\_index(int, int) : void}
+\operation{- draw\_bean(int, int) : void}
+\operation{- draw\_power\_bean(int, int) : void}
+\operation{+ Map(char *)}
+\operation{+ \textasciitilde Map()}
+\operation{+ draw() : void}
+\operation{+ shortest\_path\_direc(int, int, int, int) : Directions}
+\operation{+ is\_wall\_block(int, int) : bool}
+\operation{+ is\_room\_block(int, int) : bool} 
+\operation{+ is\_wall\_point(float, float) : bool}
+\operation{+ is\_room\_point(float, float) : bool} 
+\end{class}
+\end{tikzpicture}
+\end{frame}
+
+\begin{frame}
+\centering
+\begin{tikzpicture}
+\begin{class}[text width=.69\textwidth]{Pacman}{0,0}
+\attribute{- imgdata : bitmapdata}
+\attribute{- color : int}
+\attribute{- powerUp : bool}
+\attribute{- move\_sprite : ALLEGRO\_BITMAP *}
+\attribute{- die\_sprite : ALLEGRO\_BITMAP *}
+\attribute{+ objData : object}
+\attribute{+ speed : int}
+\attribute{+ death\_anim\_counter : ALLEGRO\_TIMER *}
+\operation{- movable(Map *, Directions) : bool}
+\operation{+ Pacman()}
+\operation{+ \textasciitilde Pacman()}
+\operation{+ draw() : void}
+\operation{+ move(Map *) : void}
+\operation{+ eatItem(char) : void}
+\operation{+ NextMove(Directions) : void} 
+\operation{+ die() : void}
+\end{class}
+\end{tikzpicture}
+\end{frame}
+
+\begin{frame}
+\centering
+\begin{tikzpicture}
+\begin{class}[text width=.46\textwidth]{Ghost}{0,0}
+\tiny
+\attribute{- imgdata : bitmapdata}
+\attribute{- flee\_sprite : ALLEGRO\_BITMAP *}
+\attribute{- dead\_sprite : ALLEGRO\_BITMAP *}
+\attribute{\# move\_sprite : ALLEGRO\_BITMAP *}
+\attribute{+ objData : object}
+\attribute{+ speed : int}
+\attribute{+ previous\_timer\_val : int64\_t}
+\attribute{+ status : GhostStatus}
+\operation{+ Ghost()}
+\operation{+ \textasciitilde Ghost()} 
+\operation{+ draw() : void}
+\operation{+ move(Map *) : void}
+\operation{+ NextMove(Directions) : void} 
+\operation{+ printGhostStatus(GhostStatus) : void}
+\operation{+ movable(Map *, Directions, bool) : bool} 
+\operation{+ toggle\_FLEE(bool) : void}
+\operation{+ collided() : void} 
+\operation[0]{+ move\_script\_GO\_IN(Map *) : void}
+\operation[0]{+ move\_script\_GO\_OUT(Map *) : void}
+\operation[0]{+ move\_script\_FLEE(Map *) : void}
+\end{class}
+\scriptsize
+\begin{class}[text width=.23\textwidth]{GhostRed}{-4.5,-6}
+\inherit{Ghost}
+\operation{+ GhostRed()}
+\operation{+ \textasciitilde GhostRed()} 
+\end{class}
+\begin{class}[text width=.23\textwidth]{GhostBlue}{-1.5,-6}
+\inherit{Ghost}
+\operation{+ GhostBlue()}
+\operation{+ \textasciitilde GhostBlue()} 
+\end{class}
+\begin{class}[text width=.23\textwidth]{GhostPink}{1.5,-6}
+\inherit{Ghost}
+\operation{+ GhostPink()}
+\operation{+ \textasciitilde GhostPink()} 
+\end{class}
+\begin{class}[text width=.23\textwidth]{GhostOrange}{4.5,-6}
+\inherit{Ghost}
+\operation{+ GhostOrange()}
+\operation{+ \textasciitilde GhostOrange()} 
+\end{class}
+\end{tikzpicture}
+\end{frame}
+
+\begin{frame}
+\centering
+\begin{tikzpicture}
+\begin{class}[text width=.575\textwidth]{Scene}{0,0}
+\footnotesize
+\attribute{+ name : char *}
+\operation{+ Scene()}
+\operation[0]{+ \textasciitilde Scene()} 
+\operation[0]{+ update() : void} 
+\operation[0]{+ draw() : void}
+\operation[0]{+ on\_key\_down(int) : void}
+\operation[0]{+ on\_key\_up(int) : void}
+\operation[0]{+ on\_mouse\_down(int, int, int, int) : void}
+\operation[0]{+ on\_mouse\_up(int, int, int, int) : void}
+\operation[0]{+ on\_mouse\_down(int, int, int, int) : void}
+\operation[0]{+ on\_mouse\_scroll(int, int, int, int) : void}
+\end{class}
+\scriptsize
+\begin{class}[text width=.23\textwidth]{SceneMenu}{-4.5,-5.5}
+\inherit{Scene}
+\operation{+ SceneMenu()}
+\operation{+ \textasciitilde SceneMenu()} 
+\end{class}
+\begin{class}[text width=.23\textwidth]{SceneSetting}{-1.5,-5.5}
+\inherit{Scene}
+\operation{+ SceneSetting()}
+\operation{+ \textasciitilde SceneSetting()} 
+\end{class}
+\begin{class}[text width=.23\textwidth]{SceneMain}{1.5,-5.5}
+\inherit{Scene}
+\operation{+ SceneMain()}
+\operation{+ \textasciitilde SceneMain()} 
+\end{class}
+\begin{class}[text width=.23\textwidth]{SceneEnd}{4.5,-5.5}
+\inherit{Scene}
+\operation{+ SceneEnd()}
+\operation{+ \textasciitilde SceneEnd()} 
+\end{class}
+\end{tikzpicture}
+\end{frame}
+
+\end{document}

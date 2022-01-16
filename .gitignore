@@ -6,6 +6,12 @@
 *.win
 *.o
 *.out
+*.aux
+*.log
+*.nav
+*.snm
+*.synctex.gz
+*.toc
 
 .DS_Store
 .vscode/*

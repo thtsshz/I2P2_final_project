@@ -168,9 +168,9 @@ void SceneMain::update(void) {
 	checkItem();
 	status_update();
 	pman->move(basic_map);
-	if (multiPlayer)
+	if (multiPlayer && (ghosts[0]->status == GhostStatus::FREEDOM || ghosts[0]->status == GhostStatus::FLEE))
 		ghosts[0]->move(basic_map);
-	for (int i = multiPlayer; i < GHOST_NUM; i++) 
+	for (int i = multiPlayer && (ghosts[0]->status == GhostStatus::FREEDOM || ghosts[0]->status == GhostStatus::FLEE); i < GHOST_NUM; i++) 
 		ghosts[i]->move_script(basic_map, pman);
 }
 
@@ -270,19 +270,19 @@ void SceneMain::on_key_down(int key_code) {
 			pman->NextMove(Directions::RIGHT);
 			break;
 		case ALLEGRO_KEY_UP:
-			if (multiPlayer)
+			if (multiPlayer && (ghosts[0]->status == GhostStatus::FREEDOM || ghosts[0]->status == GhostStatus::FLEE))
 				ghosts[0]->NextMove(Directions::UP);
 			break;
 		case ALLEGRO_KEY_LEFT:
-			if (multiPlayer)
+			if (multiPlayer && (ghosts[0]->status == GhostStatus::FREEDOM || ghosts[0]->status == GhostStatus::FLEE))
 				ghosts[0]->NextMove(Directions::LEFT);
 			break;
 		case ALLEGRO_KEY_DOWN:
-			if (multiPlayer)
+			if (multiPlayer && (ghosts[0]->status == GhostStatus::FREEDOM || ghosts[0]->status == GhostStatus::FLEE))
 				ghosts[0]->NextMove(Directions::DOWN);
 			break;
 		case ALLEGRO_KEY_RIGHT:
-			if (multiPlayer)
+			if (multiPlayer && (ghosts[0]->status == GhostStatus::FREEDOM || ghosts[0]->status == GhostStatus::FLEE))
 				ghosts[0]->NextMove(Directions::RIGHT);
 			break;
 		case ALLEGRO_KEY_C:
@@ -384,7 +384,4 @@ SceneMain::SceneMain(void) : Scene() {
 	//scene.on_mouse_down = &on_mouse_down;
 	// TODO: Register more event callback functions such as keyboard, mouse, ...
 	game_log("Start scene created");
-
-	if (multiPlayer)
-		ghosts[0]->status = GhostStatus::FREEDOM;
 }

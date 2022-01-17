@@ -29,7 +29,4 @@ public:
 	bool is_wall_point(float, float);
 	bool is_room_point(float, float);
 };
-
-//void draw_block(Map*, RecArea);
-
 #endif

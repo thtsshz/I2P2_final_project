@@ -1,16 +1,7 @@
 #ifndef GHOST_H
 #define GHOST_H
 #include "utility.h"
-#include "game.hpp"
-// <Forward Declaration>
-// forward declarations can be useful when you need to have looping struct declarations,
-// but you want to (should) prevent mutually include dependency.
-// Only applicable when you only need the declaration but no need the definition in you sturct,
-// which means that you only used the struct as pointer(no access to struct data), param, return type in this file.
-// If you have to access the data in struct ex. `A->data`, 
-// you should include the corresponding header file for its definition.
-// Advance reading : https://stackoverflow.com/questions/18658438/what-is-forward-declaration-and-the-difference-between-typedef-struct-x-and
-
+#include "game.hpp" 
 typedef struct Pacman Pacman;
 typedef struct Map Map;
 

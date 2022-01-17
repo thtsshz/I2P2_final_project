@@ -1,11 +1,6 @@
-// [shared.c]
-// you should define the shared variable declared in the header here.
-
 #include "shared.h"
 #include "utility.h"
 #include "game.hpp"
-// #include "scene_menu.hpp"
-
 ALLEGRO_FONT* font_pirulen_32;
 ALLEGRO_FONT* font_pirulen_24;
 ALLEGRO_SAMPLE* themeMusic = NULL;
@@ -25,14 +20,7 @@ int fontSize = 30;
 float music_volume = 0.5;
 float effect_volume = 0.5;
 bool gameDone = false;
-bool multiPlayer = false; // whether in multi-player mode
-
-/*
-	A way to accelerate is load assets once.
-	And delete them at the end.
-	This method does provide you better management of memory.
-	
-*/
+bool multiPlayer = false; 
 void shared_init(void) {
 	
 	menuFont = load_font("Assets/Minecraft.ttf", fontSize);

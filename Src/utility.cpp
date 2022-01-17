@@ -1,6 +1,3 @@
-// [utility.c]
-// you should implement the utility functions defined in the header.
-
 #include "utility.h"
 #include "game.hpp"
 #include <math.h>
@@ -8,7 +5,7 @@
 #include <allegro5/allegro_image.h>
 #include <allegro5/allegro_font.h>
 #include <allegro5/allegro_audio.h>
-extern uint32_t GAME_TICK;//, GAME_TICK_CD;
+extern uint32_t GAME_TICK;
 const int GridSize = 22;
 float VOLUME = 1.0;
 extern const int map_offset_x;
@@ -16,10 +13,6 @@ extern const int map_offset_y;
 extern const int block_width, block_height;
 ALLEGRO_SAMPLE* load_audio(const char* filename) {
 	ALLEGRO_SAMPLE* sample = al_load_sample(filename);
-//	if (!sample)
-//		game_abort("failed to load audio: %s", filename);
-//	else
-//		game_log("loaded audio: %s", filename);
 	return sample;
 }
 
@@ -34,14 +27,11 @@ ALLEGRO_SAMPLE_ID play_bgm(ALLEGRO_SAMPLE* sample, float volume) {
 	ALLEGRO_SAMPLE_ID id;
 	if (!al_play_sample(sample, volume, 0.0, 1.0, ALLEGRO_PLAYMODE_LOOP, &id))
 		game_abort("failed to play audio (bgm)");
-
-		//game_log("played audio (bgm)");
 		return id;
 }
 
 void stop_bgm(ALLEGRO_SAMPLE_ID sample) {
 	al_stop_sample(&sample);
-	//game_log("stop audio (bgm)");
 }
 
 ALLEGRO_FONT* load_font(const char* filename, int size) {
@@ -82,9 +72,6 @@ ALLEGRO_BITMAP* load_bitmap_resized(const char* filename, int w, int h) {
 	return resized_bmp;
 }
 
-// [HACKATHON 3-5]
-// TODO: Define bool pnt_in_rect(int px, int py, RecArea field)
-// Uncomment and fill in the code below.
 bool pnt_in_rect(int px, int py, RecArea field) {
 	return (px<=field.x+field.w&&px>=field.x&&py<=field.y+field.w&&py>=field.y);
 }
@@ -95,10 +82,7 @@ void setRecArea(RecArea* RA, float x, float y, float w, float h) {
 	RA->w = w;
 	RA->h = h;
 }
-// Hakathon
 bool RecAreaOverlap(const RecArea RA,const RecArea RB) {
-	// [TODO]
-	// Detect if two RecArea is overlapped.
 	float RA_x2 = RA.x + RA.w;
 	float RA_y2 = RA.y + RA.h;
 	float RB_x2 = RB.x + RB.w;
@@ -106,14 +90,8 @@ bool RecAreaOverlap(const RecArea RA,const RecArea RB) {
 	if ((fmin(RA_x2, RB_x2) > fmax(RA.x, RB.x)) && (fmin(RA_y2, RB_y2) > fmax(RA.y, RB.y)))
 		return true;
 	return false;
-	/*
-		if(...)
-			return true;
-		return false;
-	*/
 }
 RecArea getDrawArea(object obj, uint32_t TOTAL_TICK) {
-	// NOTODO
 	RecArea target;
 		
 	target.x = map_offset_x + obj.Coord.x * block_width;
@@ -143,12 +121,10 @@ RecArea getDrawArea(object obj, uint32_t TOTAL_TICK) {
 	return target;	
 }
 void printRecAreaInfo(const RecArea* RA) {
-	// NOTODO
 	game_log("RecArea info: \nx: %f, y: %f, h: %f\n",
 		RA->x, RA->y, RA->w, RA->h);
 }
 void printDirection(const Directions a) {
-	// NOTODO
 	switch (a)
 	{
 	case Directions::NONE:
@@ -173,25 +149,19 @@ void printDirection(const Directions a) {
 }
 
 bool movetime(int speed) {
-	// NOTODO
 	return GAME_TICK % (GAME_TICK_CD / speed) == 0;
 }
 
 uint32_t generateRandomNumber(uint32_t a, uint32_t b) {
-	// NOTODO
 	if (b < a) 
 		game_abort("Error in RandomNumber, b is less than a");
-//	srand(time(NULL));
 	return rand() % (b - a + 1) + a;
 }
 double generateRandomFloat() {
-	// NOTODO
-//	srand(time(NULL));
 	return (double)rand() / RAND_MAX;
 }
 
 bool bernoulliTrail(double p) {
-	// NOTODO
 	if (p >= 1 || p <= 0) 
 		game_abort("Error range of p = %lf in BernoulliTrail func\n But p should be between 0.0 and 1.0", p);
 	return generateRandomFloat() < p;

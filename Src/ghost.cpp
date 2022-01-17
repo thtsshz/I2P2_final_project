@@ -7,34 +7,18 @@
 #include "pacman_obj.hpp"
 #include "map.hpp"
 #include "game.hpp"
-/* global variables*/
-// [ NOTE ]
-// if you change the map .txt to your own design.
-// You have to modify cage_grid_{x,y} to corressponding value also.
-// Or you can do some change while loading map (reading .txt file)
-// Make the start position metadata stored with map.txt.
 const int cage_grid_x=22, cage_grid_y=11;
-/* shared variables. */
 extern uint32_t GAME_TICK;
-//extern uint32_t GAME_TICK_CD;
 extern ALLEGRO_TIMER* power_up_timer;
 extern const int block_width,  block_height;
-/* Internal variables */
 static const int fix_draw_pixel_offset_x = -3;
 static const int fix_draw_pixel_offset_y = -3;
 static const int draw_region = 30;
 static int check=0;
-// [ NOTE - speed again ]
-// Again, you see this notaficationd. If you still want to implement something 
-// fancy with speed, objData->moveCD and GAME_TICK, you can first start on 
-// working on animation of ghosts and pacman. // Once you finished the animation 
-// part, you will have more understanding on whole mechanism.
 static const int basic_speed = 2;
 
 Ghost::Ghost()
 {
-
-	// NOTODO
 	objData.Size.x = block_width;
 	objData.Size.y = block_height;
 
@@ -55,14 +39,12 @@ Ghost::~Ghost(){
 	al_destroy_bitmap(move_sprite);
 }
 void Ghost::draw() {
-	// getDrawArea return the drawing RecArea defined by objData and GAME_TICK_CD
 	RecArea drawArea = getDrawArea(objData, GAME_TICK_CD);
 	int v=objData.moveCD-objData.moveCD/32*32;
 	int bitmap_x_offset = 0;
 	check++;
 	if(check==65)
 		check=0;
-	// [TODO] below is for animation usage, change the sprite you want to use.
 	if (status == GhostStatus::FLEE){
 		if(al_get_timer_count(power_up_timer)>7){
 			if(check>32){
@@ -120,9 +102,6 @@ void Ghost::draw() {
 				);
 			}
 		}
-		/*
-			al_draw_scaled_bitmap(...)
-		*/
 	}
 	else if (status == GhostStatus::GO_IN) {
 		switch (objData.facing){
@@ -265,12 +244,6 @@ void Ghost::printGhostStatus(GhostStatus S) {
 	}
 }
 bool Ghost::movable(Map* M, Directions targetDirec, bool room) {
-	// [HACKATHON 2-3]
-	// TODO: Determine if the current direction is movable.
-	// Basically, this is a ghost version of `pacman_movable`.
-	// So if you have finished (and you should), you can just "copy and paste"
-	// and do some small alternation.
-
 	int x=objData.Coord.x,y=objData.Coord.y;
 	switch (targetDirec)
 	{
@@ -298,13 +271,6 @@ bool Ghost::movable(Map* M, Directions targetDirec, bool room) {
 }
 
 void Ghost::toggle_FLEE(bool setFLEE) {
-	// [TODO]
-	// TODO: Here is reserved for power bean implementation.
-	// The concept is "When pacman eats the power bean, only
-	// ghosts who are in state FREEDOM will change to state FLEE.
-	// For those who are not (BLOCK, GO_IN, etc.), they won't change state."
-	// This implementation is based on the classic PACMAN game.
-	// You are allowed to do your own implementation of power bean system.
 	if(setFLEE){
 		if(status == GhostStatus::FREEDOM){ 
 			status = GhostStatus::FLEE;
@@ -326,17 +292,9 @@ void Ghost::collided() {
 }
 
 void Ghost::move_script_GO_IN(Map* M) {
-	// Description
-	// `shortest_path_direc` is a function that returns the direction of shortest path.
-	// Check `map.c` for its detail usage.
-	// For GO_IN state.
 	objData.nextTryMove = M->shortest_path_direc(objData.Coord.x, objData.Coord.y, cage_grid_x, cage_grid_y + 1);
 }
 void Ghost::move_script_GO_OUT(Map* M) {
-	// Description
-	// Here we always assume the room of ghosts opens upward.
-	// And used a greedy method to drag ghosts out of room.
-	// You should modify here if you have different implementation/design of room.
 	if(M->map[objData.Coord.y][objData.Coord.x] == 'B') 
 		NextMove(Directions::UP);
 	else
@@ -352,13 +310,7 @@ int inv2(int dir){
 	return (int)Directions::LEFT;
 } 
 void Ghost::move_script_FLEE(Map* M, const Pacman * const pacman) {
-	// [TODO]
 	Directions shortestDirection = M->shortest_path_direc(objData.Coord.x, objData.Coord.y, pacman->objData.Coord.x, pacman->objData.Coord.y);
-	// Description:
-	// The concept here is to simulate ghosts running away from pacman while pacman is having power bean ability.
-	// To achieve this, think in this way. We first get the direction to shortest path to pacman, call it K (K is either UP, DOWN, RIGHT or LEFT).
-	// Then we choose other available direction rather than direction K.
-	// In this way, ghost will escape from pacman.
 	static int proba[4]; // possible movement
 	int i,cnt = 0;
 	for (i = 1; i <= 4; i++)
@@ -374,14 +326,11 @@ void Ghost::move_script_FLEE(Map* M, const Pacman * const pacman) {
 void Ghost::move(Map *M) {
 	if (!movetime(speed))
 		return;
-	// if (game_over)
-	// 	return;
 	int probe_x = objData.Coord.x, probe_y = objData.Coord.y;
 	if (movable(M, objData.nextTryMove, false)) 
 		objData.preMove = objData.nextTryMove;
 	else if (!movable(M, objData.preMove, false)) 
 		return;
-//	printf("MOVE DIRECTION%d\n",objData.preMove);
 	switch (objData.preMove)
 	{
 	case Directions::UP:

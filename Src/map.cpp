@@ -6,13 +6,10 @@
 #include "map.hpp"
 #define QUEUE_SIZE 3000
 
-/*global variables*/
-// [ NOTE ]
-const int block_width = 21,  block_height = 21;			// the pixel size of a "block"
-const int map_offset_x = 25, map_offset_y = 50;			// pixel offset of where to start draw map
+const int block_width = 21,  block_height = 21;			
+const int map_offset_x = 25, map_offset_y = 50;			
 const int four_probe[4][2] = {{ 1, 0 }, { 0, 1 }, { -1,0 }, { 0, -1 }};
 ALLEGRO_BITMAP* all;
-/* Declare static function prototypes. */
 
 const char* nthu_map[] = {
 	"#####################################",
@@ -83,15 +80,6 @@ const char* default_map[] = {
 
 Map::Map(const char *filepath) {
 
-// [HACKATHON 0]
-// TODO: Read the map from "Assets/map_nthu.txt"
-// ~~~~~~~~!!!!!!!!!!!!!!!!!!!!!!!!!!!~~~~~~~~~
-// Description: So for this part, you don't have to really finish them during hackathon.
-// You can just copy the map data in "map_nthu.txt" to the array `default_map`
-// Or just use the array `nthu_map` in your Map Data. 
-// But we suggest you to finish this part if you have time since this is one of 
-// the grading part in Basic part in Final_Project_Rules.
-/* ----------------------------- start of default map code*/
 	all = load_bitmap("Assets/pacman_tile.png"); 
 	FILE* pFile = NULL;
 	int n,m;
@@ -102,9 +90,6 @@ Map::Map(const char *filepath) {
 		
 	}
 	else {
-		// [HACKATHON 0-1]
-		// use fopen to create a file FILE* type
-		// use pFile can fscanf do reading from file just like read from command line.
 		game_log("%s\n", filepath);
 		pFile = fopen("Assets/map_nthu.txt","r");
 		if (!pFile)
@@ -115,41 +100,16 @@ Map::Map(const char *filepath) {
 		col_num=m;
 		getc(pFile); // get the '\n'
 	}
-	/*
-	[TODO]
-	Allocate a 2-Dimension dynamic char array for recording Map 
-	*/
 	map = (char**)malloc(sizeof(char*) * row_num);
-//	if (!map) {
-//		game_abort(stderr, "map char array malloc error\n");
-//		return NULL;
-//	}
 	for (int i = 0; i < row_num; i++) {
 		map[i] = (char*)malloc(sizeof(char) * col_num);
-//		if(!map[i]){
-//			game_abort(stderr, "map char array malloc error\n");
-//			return NULL;
-//		}
 	}
-	/*
-		[TODO]
-		read file to map[row][col] 
-		'#' -> wall
-		'.' -> beans
-		'B' -> room of ghost
-		'P' -> Power Pellets
-	*/
 	wallnum = beansCount = 0;
 	for (int i = 0; i < row_num; i++) {
 		for (int j = 0; j < col_num; j++) {
 			if (filepath == NULL)
-			// [HACKATHON 0-1]
-			// You can just switch to nthu_map if you want to finish HACKATHON 0 later.
-			//	map[i][j] = default_map[i][j]; 
 				map[i][j] = nthu_map[i][j];
 			else{
-				// [HACKATHON 0-2]
-				// read the map from file just like read from default_map
 				fscanf(pFile," %c",&map[i][j]);
 			}		
 			switch (map[i][j])
@@ -172,8 +132,6 @@ Map::Map(const char *filepath) {
 }
 
 Map::~Map() {
-	// [TODO]
-	// you should free the dynamic allocated part of Map* M at here;
 	if (map) {
 		for(int i = 0;i < col_num; i++)
 			free(map[i]);
@@ -183,10 +141,6 @@ Map::~Map() {
 
 
 void Map::draw() {
-	/*
-		[TODO]
-		draw the map according to map
-	*/
 	for (int row = 0; row < row_num; row++) {
 		for (int col = 0; col < col_num; col++) {
 			switch (map[row][col])
@@ -194,9 +148,7 @@ void Map::draw() {
 				case '#':
 					draw_block_index(row, col);
 					break;
-				// [ TODO ]
-				// draw the power bean
-				case 'P':
+					case 'P':
 					draw_power_bean(row, col);
 					break;
 				case '.':
@@ -213,20 +165,6 @@ void Map::draw() {
 			}
 		}
 	}
-	/*
-		for(...){
-			for(...)
-				switch(map[][])
-				{
-				case '#':
-					...
-				case '.': 
-					...
-				case 'P':
-					...
-				}
-		}
-	*/
 }
 void Map::draw_cherry(const int row, const int col) {
 	al_draw_scaled_bitmap(
@@ -325,13 +263,6 @@ bool Map::is_room_block(int index_x, int index_y) {
 
 
 Directions Map::shortest_path_direc(int startGridx, int startGridy, int endGridx, int endGridy) {
-	// [NOTODO]
-	// Here is a complete function return the next direction of the shorstest path.
-	// Given Map, start point and end point.
-	// It will tell you where to go for the shortest path.
-	// !NOTICE! if your map grow really large, the size of queue, may become not enough. 
-	// Hint: You can alter this function and make it return direction and also the distance for your usage.
-
 
 static int8_t queue_x[QUEUE_SIZE];
 static int8_t queue_y[QUEUE_SIZE];
@@ -339,12 +270,11 @@ static	uint16_t front;
 static	uint16_t end;
 
 	static Directions steped[MAX_WALL_NUM_H][MAX_WALL_NUM_W];
-	memset(steped, 0, sizeof(steped)); // set as NONE;
-
+	memset(steped, 0, sizeof(steped));
 	front = end = 0;
 	queue_x[end] = startGridx;
 	queue_y[end] = startGridy;
-	steped[startGridy][startGridx] = (Directions)1; /*	for dummy just means that startGrid have been visited.	*/ 
+	steped[startGridy][startGridx] = (Directions)1; 
 
 	end++;
 

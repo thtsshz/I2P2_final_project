@@ -3,14 +3,11 @@
 #include "pacman_obj.hpp"
 #include "map.hpp"
 #include "game.hpp"
-/* Shared variables */
 #define GO_OUT_TIME 256
-//extern uint32_t GAME_TICK_CD;
 extern uint32_t GAME_TICK;
 extern ALLEGRO_TIMER *game_tick_timer;
 extern Ghost** ghosts;
 extern const int cage_grid_x, cage_grid_y; //22 11
-/* Declare static function prototypes */
 Directions inv(Directions dir)
 {
 	if (dir == Directions::UP)
@@ -24,9 +21,6 @@ Directions inv(Directions dir)
 
 void GhostRed::move_script_FREEDOM(Map *M, Pacman *pacman)
 {
-	// [HACKATHON 2-4]
-	// Uncomment the following code and finish pacman picking random direction.
-
 	static Directions proba[4]; // possible movement
 	int i, cnt = 0;
 	for (i = 1; i <= 4; i++)
@@ -38,7 +32,6 @@ void GhostRed::move_script_FREEDOM(Map *M, Pacman *pacman)
 		return;
 	}
 	int x_dif = objData.Coord.x - pacman->objData.Coord.x, y_dif = objData.Coord.y - pacman->objData.Coord.y;
-	//	printf("%d %d\n",pacman->objData.Coord.x,pacman->objData.Coord.y);
 	if (abs(x_dif) > abs(y_dif))
 	{
 		if (x_dif > 0)
@@ -118,12 +111,6 @@ void GhostRed::move_script_FREEDOM(Map *M, Pacman *pacman)
 			}
 	}
 	NextMove(proba[rand() % cnt]);
-	// [TODO] (Not in Hackathon)
-	// Description:
-	// For red(Blinky) we ask you to implement an random strategy ghost,
-	// which means moving in random direction.
-	// But your random strategy have to designed carefully so that ghost won't walk back and forth.
-	// (The code here DO perform walking back and forth.)
 }
 
 void GhostRed::move_script_BLOCKED(Map *M)
@@ -156,7 +143,6 @@ void GhostRed::move_script(Map *M, Pacman *pacman)
 	{
 	case GhostStatus::BLOCKED:
 		move_script_BLOCKED(M);
-		//			printf("NOTICE:%d\n",al_get_timer_count(game_tick_timer)-ghost->previous_timer_val);
 		if(!previous_timer_val){
 			if(al_get_timer_count(game_tick_timer) > 0)
 				status = GhostStatus::GO_OUT;
@@ -197,8 +183,6 @@ void GhostRed::move_script(Map *M, Pacman *pacman)
 	}
 	else if (!movable(M, objData.preMove, false))
 		return;
-	//		if(typeFlag==Pinky)
-	//			printf("COOD::%d %d\n",objData.Coord.x,objData.Coord.y);
 	switch (objData.preMove)
 	{
 	case Directions::RIGHT:

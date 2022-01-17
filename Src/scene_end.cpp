@@ -17,9 +17,17 @@ extern int score_size;
 extern ALLEGRO_SAMPLE* endMusic;
 ALLEGRO_SAMPLE_ID endBGM;
 ALLEGRO_BITMAP* ranklist;
-
+ALLEGRO_BITMAP* bg;
 void SceneEnd::draw() {
-	al_clear_to_color(al_map_rgb(102, 238, 108));
+	al_clear_to_color(al_map_rgb(31, 21, 85));
+	al_draw_scaled_bitmap(
+		bg,
+		0, 0,
+		470, 579,
+		0, 0,
+		800, 840,
+		0
+	);
 	al_draw_scaled_bitmap(
 		ranklist,
 		0, 0,
@@ -34,7 +42,7 @@ void SceneEnd::draw() {
     	al_draw_text(font, al_map_rgb(255, 255, 255), 30, 130+i*55,
             ALLEGRO_ALIGN_LEFT,str);
 	}
-    al_draw_text(font, al_map_rgb(0, 0, 0), SCREEN_W / 2, 680,
+    al_draw_text(font, al_map_rgb(255, 255, 255), SCREEN_W / 2, 680,
              ALLEGRO_ALIGN_CENTER,"PRESS \"ENTER\"");
 }
 void SceneEnd::on_key_down(int keycode) {
@@ -54,6 +62,7 @@ SceneEnd::~SceneEnd(void) {
 SceneEnd::SceneEnd() : Scene() {
 	endBGM = play_bgm(endMusic,music_volume);
 	ranklist = load_bitmap("Assets/ranklist.png");
+	bg = load_bitmap("Assets/bg.png");
 	font=al_load_ttf_font("Assets/Minecraft.ttf", 48, 0);
 	name = strdup("End");
 	game_log("End scene created");

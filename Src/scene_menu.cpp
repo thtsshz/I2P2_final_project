@@ -12,20 +12,11 @@
 #include "scene_menu.hpp"
 #include "utility.h"
 #include "shared.h"
-/* Internal Variables*/
 static ALLEGRO_BITMAP* gameTitle = NULL;
 static ALLEGRO_SAMPLE_ID menuBGM;
 static int gameTitleW ;
 static int gameTitleH ;
 extern bool check_color;
-// [HACKATHON 3]
-// TARGET : use a clickable button to enter setting scene.
-// For `Button` struct(object) is defined in `scene_menu_object.hpp` and `scene_menu_object.c`
-// STRONGLY recommend you trace both of them first. 
-
-//	[HACKATHON 3-1]
-//	TODO: Declare variable for button
-//	Uncomment and fill the code below
 static Button btnSettings;
 
 void SceneMenu::draw() {
@@ -35,8 +26,6 @@ void SceneMenu::draw() {
 	const float scale = 0.7;
 	const float offset_w = (SCREEN_W >> 1) - 0.5 * scale * gameTitleW;
 	const float offset_h = (SCREEN_H >> 1) - 0.5 * scale * gameTitleH;
-
-	//draw title image
 	al_draw_scaled_bitmap(
 		gameTitle,
 		0, 0,
@@ -61,24 +50,13 @@ void SceneMenu::draw() {
 		ALLEGRO_ALIGN_CENTER,
 		"PRESS \"ENTER\""
 	);
-
-		// [HACKATHON 3-3]
-		// TODO: Draw button
-		// Uncomment and fill the code below
 	btnSettings.draw();
 }
 
 void SceneMenu::on_mouse_move(int a, int mouse_x, int mouse_y, int f) {
-	//	[HACKATHON 3-7]
-	//	TODO: Update button's status(hovered), and utilize the function `pnt_in_rect`, which you just implemented
-	//	Uncomment and fill the code below
 	btnSettings.hovered = pnt_in_rect(mouse_x, mouse_y,btnSettings.body);
 }
 
-
-//	[HACKATHON 3-8]
-//	TODO: When btnSettings clicked, switch to settings scene
-//	Uncomment and fill the code below
 void SceneMenu::on_mouse_down(int a, int b, int c, int d) {
 	if (btnSettings.hovered)
 		game_change_scene(new SceneSetting());
@@ -88,9 +66,6 @@ void SceneMenu::on_mouse_down(int a, int b, int c, int d) {
 SceneMenu::~SceneMenu() {
 	stop_bgm(menuBGM);
 	al_destroy_bitmap(gameTitle);
-	//	[HACKATHON 3-10]
-	//	TODO: Destroy button images
-	//	Uncomment and fill the code below
 	al_destroy_bitmap(btnSettings.default_img);
 	al_destroy_bitmap(btnSettings.hovered_img);
 }
@@ -108,18 +83,7 @@ void SceneMenu::on_key_down(int keycode) {
 			break;
 	}
 }
-
-// TODO: Add more event callback functions such as update, ...
-
-// Functions without 'static', 'extern' prefixes is just a normal
-// function, they can be accessed by other files using 'extern'.
-// Define your normal function prototypes below.
-
-// The only function that is shared across files.
 SceneMenu::SceneMenu(void) : Scene() {
-	// [HACKATHON 3-2]
-	// TODO: Create button to settings
-	//	Uncomment and fill the code below
 	btnSettings = Button(730, 20, 50, 50, "Assets/settings.png", "Assets/settings2.png");
 	gameTitle = load_bitmap("Assets/title.png");
 	gameTitleW = al_get_bitmap_width(gameTitle);
@@ -127,9 +91,5 @@ SceneMenu::SceneMenu(void) : Scene() {
 	stop_bgm(menuBGM);
 	menuBGM = play_bgm(themeMusic, music_volume);
 	name = strdup("Menu");
-	// [HACKATHON 3-9]
-	// TODO: Register on_mouse_down.
-	// Uncomment the code below.
-	// TODO: Register more event callback functions such as keyboard, mouse, ...
 	game_log("Menu scene created");
 }

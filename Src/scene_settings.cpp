@@ -1,7 +1,3 @@
-// [HACKATHON 3-9]
-// TODO: Create scene_settings.hpp and scene_settings.c.
-// No need to do anything for this part. We've already done it for
-// you, so this 2 files is like the default scene template.
 #include <allegro5/allegro.h>
 #include <allegro5/allegro_primitives.h>
 #include <allegro5/allegro_image.h>
@@ -16,15 +12,6 @@
 #include <string>
 using namespace std;
 ALLEGRO_SAMPLE_ID menuBGM;
-// Variables and functions with 'static' prefix at the top level of a
-// source file is only accessible in that file ("file scope", also
-// known as "internal linkage"). If other files has the same variable
-// name, they'll be different variables.
-
-/* Define your static vars / function prototypes below. */
-
-// TODO: More variables and functions that will only be accessed
-// inside this scene. They should all have the 'static' prefix.
 extern ALLEGRO_FONT* font;
 ALLEGRO_FONT* small_font;
 
@@ -60,11 +47,9 @@ void SceneSetting::on_key_down(int keycode) {
 			break;
 	}
 }
-// The only function that is shared across files.
 SceneSetting::SceneSetting() {
 	font=al_load_ttf_font("Assets/pirulen.ttf", 48, 0);
 	small_font = al_load_ttf_font("Assets/pirulen.ttf", 18, 0);
 	name = strdup("Settings");
 	game_log("Settings scene created");
-	// TODO: Register more event callback functions such as keyboard, mouse, ...
 }

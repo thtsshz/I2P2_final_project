@@ -97,7 +97,7 @@
 \begin{tikzpicture}
 \begin{class}[text width=.69\textwidth]{Map}{0,0}
 \attribute{- wallnum : int}
-\attribute{- beansCcount : int}
+\attribute{- beansCount : int}
 \attribute{+ row\_num : int}
 \attribute{+ col\_num : int}
 \attribute{+ beansNum : int}
@@ -165,27 +165,30 @@
 \operation{+ movable(Map *, Directions, bool) : bool} 
 \operation{+ toggle\_FLEE(bool) : void}
 \operation{+ collided() : void} 
-\operation[0]{+ move\_script\_GO\_IN(Map *) : void}
-\operation[0]{+ move\_script\_GO\_OUT(Map *) : void}
-\operation[0]{+ move\_script\_FLEE(Map *) : void}
+\operation{+ move\_script\_GO\_IN(Map *) : void}
+\operation{+ move\_script\_GO\_OUT(Map *) : void}
+\operation{+ move\_script\_FLEE(Map *) : void}
+\operation[0]{+ move\_script(Map *) : void}
+\operation[0]{+ move\_script\_BLOCKED(Map *) : void}
+\operation[0]{+ move\_script\_FREEDOM(Map *) : void}
 \end{class}
 \scriptsize
-\begin{class}[text width=.23\textwidth]{GhostRed}{-4.5,-6}
+\begin{class}[text width=.2\textwidth]{GhostRed}{-4.5,-6.5}
 \inherit{Ghost}
 \operation{+ GhostRed()}
 \operation{+ \textasciitilde GhostRed()} 
 \end{class}
-\begin{class}[text width=.23\textwidth]{GhostBlue}{-1.5,-6}
+\begin{class}[text width=.2\textwidth]{GhostBlue}{-1.5,-6.5}
 \inherit{Ghost}
 \operation{+ GhostBlue()}
 \operation{+ \textasciitilde GhostBlue()} 
 \end{class}
-\begin{class}[text width=.23\textwidth]{GhostPink}{1.5,-6}
+\begin{class}[text width=.2\textwidth]{GhostPink}{1.5,-6.5}
 \inherit{Ghost}
 \operation{+ GhostPink()}
 \operation{+ \textasciitilde GhostPink()} 
 \end{class}
-\begin{class}[text width=.23\textwidth]{GhostOrange}{4.5,-6}
+\begin{class}[text width=.23\textwidth]{GhostOrange}{4.5,-6.5}
 \inherit{Ghost}
 \operation{+ GhostOrange()}
 \operation{+ \textasciitilde GhostOrange()} 
@@ -196,7 +199,7 @@
 \begin{frame}
 \centering
 \begin{tikzpicture}
-\begin{class}[text width=.575\textwidth]{Scene}{0,0}
+\begin{class}[text width=.55\textwidth]{Scene}{.75,0}
 \footnotesize
 \attribute{+ name : char *}
 \operation{+ Scene()}
@@ -211,26 +214,38 @@
 \operation[0]{+ on\_mouse\_scroll(int, int, int, int) : void}
 \end{class}
 \scriptsize
-\begin{class}[text width=.23\textwidth]{SceneMenu}{-4.5,-5.5}
+\begin{class}[text width=.2\textwidth]{SceneMenu}{-4.5,-5.5}
 \inherit{Scene}
 \operation{+ SceneMenu()}
 \operation{+ \textasciitilde SceneMenu()} 
 \end{class}
-\begin{class}[text width=.23\textwidth]{SceneSetting}{-1.5,-5.5}
+\begin{class}[text width=.2\textwidth]{SceneSetting}{-1.5,-5.5}
 \inherit{Scene}
 \operation{+ SceneSetting()}
 \operation{+ \textasciitilde SceneSetting()} 
 \end{class}
-\begin{class}[text width=.23\textwidth]{SceneMain}{1.5,-5.5}
+\begin{class}[text width=.2\textwidth]{SceneMain}{1.5,-5.5}
 \inherit{Scene}
 \operation{+ SceneMain()}
 \operation{+ \textasciitilde SceneMain()} 
 \end{class}
-\begin{class}[text width=.23\textwidth]{SceneEnd}{4.5,-5.5}
+\begin{class}[text width=.2\textwidth]{SceneEnd}{4.5,-5.5}
 \inherit{Scene}
 \operation{+ SceneEnd()}
 \operation{+ \textasciitilde SceneEnd()} 
 \end{class}
+\begin{class}[text width=.275\textwidth]{Button}{-4.575,-.5}
+\tiny
+\attribute{+ body : RecArea}
+\attribute{+ default\_img : ALLEGRO\_BITMAP *}
+\attribute{+ hovered\_img : ALLEGRO\_BITMAP *}
+\attribute{+ hover : bool}
+\operation{+ Button()}
+\operation{+ Button(float, float, float, float, char *, char *)} 
+\operation{+ draw() : void}
+\operation{+ Hover(int, int) : bool} 
+\end{class}
+\aggregation{SceneMenu}{}{}{Button}
 \end{tikzpicture}
 \end{frame}
 
